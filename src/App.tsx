@@ -73,12 +73,14 @@ return (
         justifyContent: "center",
         alignItems: "center",
         gap: 24,
-        background: "#111",
+        background: "#339388",
         color: "#fff",
         padding: "12px 0",
         position: "sticky",
         top: 0,
         zIndex: 100,
+        borderRadius: 50,
+        margin: 10
       }}
     >
       {tabs.map((tab) => (
@@ -87,12 +89,12 @@ return (
           to={tab.path}
           style={{
             textDecoration: "none",
-            color: location.pathname === tab.path ? "#f39c12" : "#fff",
+            color: location.pathname === tab.path ? "#A094C7" : "#372554",
             fontWeight: location.pathname === tab.path ? "700" : "400",
             fontSize: 16,
             borderBottom:
               location.pathname === tab.path
-                ? "2px solid #f39c12"
+                ? "2px solid #A094C7"
                 : "2px solid transparent",
             paddingBottom: 4,
             transition: "all 0.2s ease",
@@ -434,7 +436,7 @@ return (
       flexDirection: "column",
       alignItems: "center",
       height: "100vh",
-      background: "#fafafa",
+      background: "#A5FFD6",
       fontFamily:
         "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace",
     }}
@@ -443,7 +445,7 @@ return (
     <div
       style={{
         textAlign: "center",
-        padding: 20,
+        padding: 200,
         width: "100%",
         maxWidth: 1000,
         position: "sticky",
@@ -451,9 +453,10 @@ return (
         background: "#A094C7",
         zIndex: 10,
         boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+        borderRadius: 50,
       }}
     >
-      <h1 style={{ margin: "0 0 8px", color: "#372554" }}>astrophoenix</h1>
+      <h1 style={{ margin: "0 0 8px", color: "#372554", letterSpacing: 10 }}>AstroPhoenix</h1>
       <p style={{ color: "#372554", margin: "0 0 16px" }}>
         Search keywords and research questions across all 608 papers.
       </p>
@@ -483,7 +486,7 @@ return (
           display: "flex",
           gap: 8,
           justifyContent: "center",
-          flexWrap: "wrap",
+          flexWrap: "wrap"
         }}
       >
         <input
