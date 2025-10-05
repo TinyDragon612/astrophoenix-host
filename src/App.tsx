@@ -101,21 +101,7 @@ return (
       }}
     >
       
-      <nav>
-      {/* ... your tab links ... */}
-      <button
-        onClick={() => signOut(auth)}
-        style={{
-          marginLeft: "auto",
-          background: "none",
-          border: "none",
-          color: "white",
-          cursor: "pointer",
-        }}
-      >
-        Logout
-      </button>
-    </nav>
+      {/* Logout moved to Profile page */}
 
       {tabs.map((tab) => (
         <Link

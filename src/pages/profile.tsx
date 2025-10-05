@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 
-import { getAuth } from "firebase/auth";
+import { getAuth, signOut } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { auth, db } from "../firebase";
+import { useNavigate } from "react-router-dom";
 
 interface UserProfile {
   displayName: string;
@@ -83,6 +84,31 @@ const Profile: React.FC = () => {
           <strong>Bio:</strong> {user.bio}
         </p>
       )}
+      <div style={{ marginTop: 16 }}>
+        <button
+          onClick={async () => {
+            const auth = getAuth();
+            try {
+              await signOut(auth);
+              // navigate back to root/login
+              // using window.location to force app to re-evaluate auth state is also acceptable, but we'll navigate
+              window.location.href = "/";
+            } catch (err) {
+              console.error("Error signing out:", err);
+            }
+          }}
+          style={{
+            background: "#e53935",
+            color: "white",
+            border: "none",
+            padding: "8px 12px",
+            borderRadius: 6,
+            cursor: "pointer",
+          }}
+        >
+          Logout
+        </button>
+      </div>
     </div>
   );
 };
