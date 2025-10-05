@@ -261,7 +261,28 @@ function SearchPage() {
 
   // search function using hybrid approach
   async function doSearch(q: string) {
-
+   const result = AI(query, "classify");
+   const summary : SearchResult[] = [];
+    /*summary.push({
+        id: "0",
+                title: "AI Summary",
+                excerpt: await AI(query, "question"),
+                score: 0,
+                matches: 0
+    });
+    if (await result == "question") {
+        const summary : SearchResult[] = [];
+        summary.push({
+        id: "0",
+                title: "AI Summary",
+                excerpt: await AI(query, "question"),
+                score: 0,
+                matches: 0
+      });
+        setResults(summary);
+        return;
+    } */
+  
     q = q.trim();
     setQuery(q);
     setResults([]);
