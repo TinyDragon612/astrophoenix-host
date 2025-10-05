@@ -9,9 +9,16 @@ import Explore from "./pages/explore";
 import Profile from "./pages/profile";
 import Saved from "./pages/saved";
 import Results from "./pages/results";
+import ArticlePage from "./pages/article";
+import LoginSignup from "./pages/login";
 
 import { initializeApp } from 'firebase/app';
 import { ResultsProvider, useResults } from "./context/ResultsContext";
+import { getAuth, signOut } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
+import { setPersistence, browserLocalPersistence } from "firebase/auth";
+import { Navigate } from "react-router-dom";
+
 
 /**
  * App.tsx - Incremental indexing, faster search, pagination, highlighting.
@@ -62,6 +69,7 @@ function tokenize(text: string) {
 }
 
 function Navbar() {
+
   const location = useLocation();
   const tabs = [
     { path: "/", label: "Search" },
@@ -559,7 +567,30 @@ return (
 
 //PAGES!!!!!
 
+
 export default function App() {
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false); // stop showing loading spinner
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+
+  return (
+    <div>
+      {user ? <MainApp /> : <LoginSignup />}
+    </div>
+  );
+
+  function MainApp() {
   return (
     <ResultsProvider>
       <Router>
@@ -570,8 +601,9 @@ export default function App() {
           <Route path="/results" element={<Results/>} />
           <Route path="/saved" element={<Saved/>} />
           <Route path="/profile" element={<Profile />} />
+        <Route path="/article/:id" element={<ArticlePage />} />
         </Routes>
       </Router>
     </ResultsProvider>
   );
-}
+}}
