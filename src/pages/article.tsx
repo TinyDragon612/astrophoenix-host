@@ -4,7 +4,7 @@ import { useParams, Link } from "react-router-dom";
 import { BASE_URL } from "../config";
 import askGPT from "../call_gpt";
 
-type DocData = { id: string; title: string; text: string };
+type DocData = { id: string; title: string; text: string, sourceUrl: string };
 
 function chunkText(text: string, target = 12000): string[] {
   const out: string[] = [];
@@ -38,6 +38,15 @@ async function summarizeWithAI(fullText: string): Promise<string> {
   return await askGPT(synthPrompt, "summarize");
 }
 
+function titleFromFirstLine(raw: string, fallback: string): string {
+  const first = (raw.split(/\r?\n/).find((l) => l.trim().length > 0) || "").trim();
+  if (!first) return fallback;
+  return first
+    .replace(/\s*[-–|]\s*(PMC|PubMed( Central)?).*/i, "") // drop " - PMC", " | PubMed"
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 export default function ArticlePage() {
   const { id = "" } = useParams();
   const [doc, setDoc] = useState<DocData | null>(null);
@@ -63,8 +72,10 @@ export default function ArticlePage() {
         if (!res.ok) throw new Error(`Fetch failed (${res.status})`);
 
         const text = await res.text();
+        const sourceUrl = res.url;
+        const title = titleFromFirstLine(text, baseId);
 
-        setDoc({ id: baseId, title, text });
+        setDoc({ id: baseId, title, text, sourceUrl });
         document.title = `${title} — AstroPhoenix`;
       } catch (e: any) {
         setErr(e?.message ?? "Unknown error");
@@ -127,11 +138,19 @@ export default function ArticlePage() {
               padding: "40px 60px",
               maxWidth: 900,
               margin: "0 auto",
+              fontFamily:
+        "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace"
             }}
           >
             <h1 style={{ marginTop: 0, color: "#372554", letterSpacing: 0.3 }}>
               {doc.title}
             </h1>
+
+            <div style={{ marginTop: 8, fontSize: 13 }}>
+              <a href={doc.sourceUrl} target="_blank" rel="noreferrer">
+                View source
+              </a>
+            </div>
 
             <div style={{ marginTop: 16, display: "flex", gap: 12 }}>
               <button onClick={handleSummarize} disabled={summarizing}>
