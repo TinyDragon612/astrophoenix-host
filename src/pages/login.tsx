@@ -7,6 +7,8 @@ createUserWithEmailAndPassword,
 signInWithEmailAndPassword,
 } from "firebase/auth";
 
+import { setPersistence, browserLocalPersistence } from "firebase/auth";
+
 const firebaseConfig = {
 apiKey: "AIzaSyBKX0eIL-ja9zHCsgi_UwlD8JlByY96UB8",
   authDomain: "astrophoenix2-3b620.firebaseapp.com",
@@ -19,6 +21,13 @@ apiKey: "AIzaSyBKX0eIL-ja9zHCsgi_UwlD8JlByY96UB8",
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+setPersistence(auth, browserLocalPersistence)
+  .then(() => {
+    // Now auth state persists across refresh
+  })
+  .catch((error) => {
+    console.error("Failed to set persistence:", error);
+  });
 
 const LoginSignup: React.FC = () => {
 const [isLogin, setIsLogin] = useState(true);

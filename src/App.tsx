@@ -7,8 +7,14 @@ import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react
 
 import Explore from "./pages/explore";
 import Profile from "./pages/profile";
+import LoginSignup from "./pages/login";
 
 import { initializeApp } from 'firebase/app';
+import { getAuth, signOut } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
+import { setPersistence, browserLocalPersistence } from "firebase/auth";
+import { Navigate } from "react-router-dom";
+
 
 /**
  * App.tsx - Incremental indexing, faster search, pagination, highlighting.
@@ -59,6 +65,7 @@ function tokenize(text: string) {
 }
 
 function Navbar() {
+
   const location = useLocation();
   const tabs = [
     { path: "/", label: "Search" },
@@ -666,15 +673,49 @@ return (
 
 //PAGES!!!!!
 
+
 export default function App() {
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false); // stop showing loading spinner
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+
   return (
-        <Router>
-      <Navbar />
+    <div>
+      {user ? <MainApp /> : <LoginSignup />}
+    </div>
+  );
+
+  function MainApp() {
+  return (
+    <Router>
+      {user && <Navbar />} {/* Only show Navbar when logged in */}
       <Routes>
-        <Route path="/" element={<SearchPage />} />
-        <Route path="/explore" element={<Explore/>} />
-        <Route path="/profile" element={<Profile />} />
+        {!user ? (
+          // 👇 Unauthenticated users only see Login page
+          <Route path="*" element={<LoginSignup />} />
+        ) : (
+          // 👇 Authenticated users see your app
+          <>
+          <Route path="/" element={<SearchPage />} />
+          <Route path="/explore" element={<Explore/>} />
+          <Route path="/profile" element={<Profile />} />
+            {/* Redirect any unknown route back to home */}
+          <Route path="/" element={user ? <SearchPage /> : <Navigate to="/login" />} />
+          <Route path="/login" element={!user ? <LoginSignup /> : <Navigate to="/" />} />
+          </>
+        )}
       </Routes>
     </Router>
   );
-}
+}}
