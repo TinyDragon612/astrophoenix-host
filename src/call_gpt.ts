@@ -5,7 +5,7 @@ const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-export default async function askGPT(prompt: string, call_type: string) {
+export default async function askGPT(prompt: string, call_type: string) : Promise<string> {
   try {
     var sys = ""
     var use = ""
@@ -33,9 +33,11 @@ export default async function askGPT(prompt: string, call_type: string) {
     });
 
     console.log(response.choices[0].message?.content?.trim() || "");
+    return response.choices[0].message?.content?.trim() || "";
   } catch (err: any) {
     console.error("Error calling GPT:", err.message || err);
   }
+  return "ERROR";
 }
 
 // Run when called directly from CLI
