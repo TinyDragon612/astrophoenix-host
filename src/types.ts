@@ -2,6 +2,7 @@ export type Doc = {
   id: string
   title: string
   content: string
+  url: string
 }
 
 export type SearchResult = {
@@ -11,4 +12,5 @@ export type SearchResult = {
   score: number
   matches: number
   content: string
+  url: string
 }

@@ -192,16 +192,22 @@ function SearchPage() {
         const manifest: string[] = await resp.json();
         setProgress({ done: 0, total: manifest.length });
 
+        const respurl = await fetch("https://raw.githubusercontent.com/AwesomeCoder412412/stupid/refs/heads/main/output.json");
+        if (!respurl.ok) throw new Error("Failed to fetch manifest urls: " + resp.status);
+        const urls: string[] = await respurl.json();
         // concurrency-limited fetch
         const concurrency = Math.min(8, Math.max(2, Math.floor(navigator.hardwareConcurrency || 4)));
         const queue = manifest.slice();
+        const urlqueue = urls.slice();
         let active = 0;
         let done = 0;
 
         function next(): Promise<void> {
           return new Promise(async (resolve) => {
             if (queue.length === 0) return resolve();
+            if (urlqueue.length === 0) return resolve();
             const filename = queue.shift()!;
+            const urll = urlqueue.shift()!;
             active++;
             try {
               // attempt encoded filename, fallback to raw
@@ -213,18 +219,18 @@ function SearchPage() {
                 if (!r.ok) {
                   console.warn("Failed to fetch", filename, r.status);
                   // still push empty doc so counts match
-                  indexDoc({ id: filename, title: filename.replace(/\.txt$/i, ""), content: "" });
+                  indexDoc({ id: filename, title: filename.replace(/\.txt$/i, ""), content: "", url: urll});
                 } else {
                   const text = await r.text();
-                  indexDoc({ id: filename, title: filename.replace(/\.txt$/i, ""), content: text });
+                  indexDoc({ id: filename, title: filename.replace(/\.txt$/i, ""), content: text, url: urll});
                 }
               } else {
                 const text = await r.text();
-                indexDoc({ id: filename, title: filename.replace(/\.txt$/i, ""), content: text });
+                indexDoc({ id: filename, title: filename.replace(/\.txt$/i, ""), content: text, url: urll });
               }
             } catch (err) {
               console.warn("Error fetching", filename, err);
-              indexDoc({ id: filename, title: filename.replace(/\.txt$/i, ""), content: "" });
+              indexDoc({ id: filename, title: filename.replace(/\.txt$/i, ""), content: "", url: urll});
             } finally {
               done++;
               active--;
@@ -346,6 +352,7 @@ function SearchPage() {
           score: 0,
           matches: (titleLower.match(new RegExp(escapeRegex(phrase), "g")) || []).length,
           content: d.content,
+          url: d.url,
         });
       }
     }
@@ -363,6 +370,7 @@ function SearchPage() {
           score: 10,
           matches: (contentLower.match(new RegExp(escapeRegex(phrase), "g")) || []).length,
           content: d.content,
+          url: d.url,
         });
       }
     }
@@ -435,6 +443,7 @@ function SearchPage() {
         score,
         matches: 0,
         content: d.content,
+        url: d.url,
       });
     }
 
@@ -466,16 +475,18 @@ function SearchPage() {
    
     const hitsMap2 = new Map<string, SearchResult>();
 
+        
+
+    if (q.includes("?")) {
         hitsMap2.set("1", {
           id: "AI",
           title: "AI Summary",
           excerpt: await AIU("You are a concise, factual assistant. Your job is to summarize and help people learn about papers on Space Biology.", aiBabble) + "\n Papers Cited: " + hitsArr[0].title,
           score: 0,
           matches: 1,
-          content: ""
+          content: "",
+          url: ""
         });
-
-    if (q.includes("?")) {
        hitsArr = Array.from(hitsMap2.values());
     }
     // Set results (full array) and reset page
