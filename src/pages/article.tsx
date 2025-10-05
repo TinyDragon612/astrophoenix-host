@@ -146,13 +146,17 @@ export default function ArticlePage() {
               {doc.title}
             </h1>
 
-            <div style={{ marginTop: 8, fontSize: 13 }}>
+            <div style={{ marginTop: 8, fontSize: 13, fontFamily:
+        "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace" }}>
               <a href={doc.sourceUrl} target="_blank" rel="noreferrer">
                 View source
               </a>
             </div>
 
-            <div style={{ marginTop: 16, display: "flex", gap: 12 }}>
+            <div style={{ 
+              marginTop: 16, 
+              display: "flex", 
+              gap: 12}}>
               <button onClick={handleSummarize} disabled={summarizing}>
                 {summarizing ? "Summarizing…" : "Summarize"}
               </button>

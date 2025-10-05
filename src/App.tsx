@@ -574,7 +574,7 @@ return (
         borderRadius: 50,
       }}
     >
-      <h1 style={{ margin: "0 0 8px", color: "#372554", letterSpacing: 10 }}>🔥AstroPhoenix</h1>
+      <h1 style={{ margin: "0 0 8px", color: "#372554", letterSpacing: 10 }}>💫AstroPhoenix</h1>
       <p style={{ color: "#372554", margin: "0 0 16px" }}>
         Search keywords and research questions across all 608 papers.
       </p>

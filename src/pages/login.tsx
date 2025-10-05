@@ -34,7 +34,7 @@ const LoginSignup: React.FC = () => {
     try {
       if (isLogin) {
         await signInWithEmailAndPassword(auth, email, password);
-        alert("Logged in!");
+        alert("Logged in 🔥");
       } else {
         // ✅ Create user account
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
