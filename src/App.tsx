@@ -9,6 +9,7 @@ import Explore from "./pages/explore";
 import Profile from "./pages/profile";
 import Saved from "./pages/saved";
 import Results from "./pages/results";
+import ArticlePage from "./pages/article";
 import LoginSignup from "./pages/login";
 
 import { initializeApp } from 'firebase/app';
@@ -603,6 +604,7 @@ export default function App() {
           <Route path="/results" element={<Results/>} />
           <Route path="/saved" element={<Saved/>} />
           <Route path="/profile" element={<Profile />} />
+        <Route path="/article/:id" element={<ArticlePage />} />
         </Routes>
       </Router>
     </ResultsProvider>
