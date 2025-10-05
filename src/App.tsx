@@ -475,6 +475,9 @@ function SearchPage() {
    
     const hitsMap2 = new Map<string, SearchResult>();
 
+        
+
+    if (q.includes("?")) {
         hitsMap2.set("1", {
           id: "AI",
           title: "AI Summary",
@@ -484,8 +487,6 @@ function SearchPage() {
           content: "",
           url: ""
         });
-
-    if (q.includes("?")) {
        hitsArr = Array.from(hitsMap2.values());
     }
     // Set results (full array) and reset page
