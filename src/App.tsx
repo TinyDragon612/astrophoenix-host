@@ -71,17 +71,18 @@ function tokenize(text: string) {
 function Navbar() {
 
   const location = useLocation();
-  const tabs = [
+
+  const auth = getAuth();
+
+    const tabs = [
     { path: "/", label: "Search" },
     { path: "/explore", label: "Explore" },
     { path: "/saved", label: "Saved" },
     { path: "/profile", label: "Profile" },
   ];
 
-const CANDIDATE_THRESHOLD = 600; // if candidate set smaller than this, search only them with Fuse for speed
-const DEFAULT_PAGE_SIZE = 10;
-
 return (
+
     <nav
       style={{
         display: "flex",
@@ -98,6 +99,23 @@ return (
         margin: 10
       }}
     >
+      
+      <nav>
+      {/* ... your tab links ... */}
+      <button
+        onClick={() => signOut(auth)}
+        style={{
+          marginLeft: "auto",
+          background: "none",
+          border: "none",
+          color: "white",
+          cursor: "pointer",
+        }}
+      >
+        Logout
+      </button>
+    </nav>
+
       {tabs.map((tab) => (
         <Link
           key={tab.path}
@@ -265,25 +283,6 @@ function SearchPage() {
     }
 
     fetchManifestAndIndex();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // run a search when navigated back from Results with a query in state
-  useEffect(() => {
-    try {
-      // attempt to read state from the history API via location
-      // note: react-router forwards the state as location.state when navigating
-      // here we access window.history.state as a fallback
-      const navState: any = (window.history.state && window.history.state.state) || (window as any).__LOCATION_STATE || null;
-      const q = navState?.query;
-      if (q && typeof q === "string") {
-        // small timeout to ensure indexing has started
-        setTimeout(() => doSearch(q), 50);
-      }
-    } catch (e) {
-      // ignore
-    }
-    // only run once on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -534,7 +533,7 @@ return (
         borderRadius: 50,
       }}
     >
-      <h1 style={{ margin: "0 0 8px", color: "#372554", letterSpacing: 10 }}>AstroPhoenix</h1>
+      <h1 style={{ margin: "0 0 8px", color: "#372554", letterSpacing: 10 }}>🔥AstroPhoenix</h1>
       <p style={{ color: "#372554", margin: "0 0 16px" }}>
         Search keywords and research questions across all 608 papers.
       </p>
