@@ -13,7 +13,7 @@ export default async function askGPT(prompt: string, call_type: string) : Promis
     switch (call_type) {
       case "classify":
         sys = "Classify whether the user is asking a question or just generally searching for a specific paper. If the user is asking a question, return, in all lowercase, 'question'. If the user is searching for a specific paper, return, in all lowercase, 'search'."
-        use = prompt
+        use = "Classify whether the user is asking a question or just generally searching for a specific paper. If the user is asking a question, return, in all lowercase, 'question'. If the user is searching for a specific paper, return, in all lowercase, 'search'. Here's the user's question:  "+prompt
 
       case "summarize":
         sys = "You are a concise, factual assistant. Your job is to summarize and help people learn about papers on Space Biology."
