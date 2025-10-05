@@ -450,10 +450,7 @@ function SearchPage() {
       if (b.matches !== a.matches) return b.matches - a.matches;
       return a.title.localeCompare(b.title);
     });
-    const encoded = encodeURIComponent(hitsArr[0].title);
-    let info = await fetch(BASE_URL + encoded + ".txt");
-    console.log(await fetch(BASE_URL + encoded + ".txt"))
-    console.log(BASE_URL + encoded + ".txt");
+
     console.log(docsRef.current.get(hitsArr[0].id)?.content);
 
     let aiBabble = "The user asked: " + q + "\n I am now going to give you the contents of several academic papers that are relevant to this topic. Use ONLY KNOWLEDGE FROM THE FOLLOWING PAPERS to answer the user's question. Every piece of information you get from the papers MUST BE CITED with the title of cited paper in parentheses at the end of the relevant sentences. Thank you very much. BEGIN PAPERS: "
