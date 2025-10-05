@@ -68,7 +68,7 @@ const LoginSignup: React.FC = () => {
             value={email}
             required
             onChange={e => setEmail(e.target.value)}
-            style={{ width: "100%", marginBottom: 12 }}
+            style={{ width: "100%", marginBottom: 12, borderRadius: 7 }}
           />
         </div>
         <div>
@@ -78,11 +78,12 @@ const LoginSignup: React.FC = () => {
             value={password}
             required
             onChange={e => setPassword(e.target.value)}
-            style={{ width: "100%", marginBottom: 12 }}
+            style={{ width: "100%", marginBottom: 12, borderRadius: 7 }}
           />
         </div>
         {error && <div style={{ color: "red", marginBottom: 12 }}>{error}</div>}
-        <button type="submit" style={{ width: "100%", padding: 8, background: "#A094C7", border: "none", borderRadius: 4, cursor: "pointer" }}>
+        <button type="submit" style={{ width: "100%", marginTop: 20, marginBottom: 20, padding: 12, background: "#A094C7", border: "none", borderRadius: 7, cursor: "pointer", fontFamily:
+          "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace" }}>
           {isLogin ? "Login" : "Sign Up"}
         </button>
       </form>
@@ -90,14 +91,16 @@ const LoginSignup: React.FC = () => {
         {isLogin ? (
           <>
             Don't have an account?{" "}
-            <button onClick={() => setIsLogin(false)} style={{ color: "blue", background: "none", border: "none", cursor: "pointer" }}>
+            <button onClick={() => setIsLogin(false)} style={{ color: "blue", background: "none", border: "none", cursor: "pointer", fontFamily:
+          "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace" }}>
               Sign Up
             </button>
           </>
         ) : (
           <>
             Already have an account?{" "}
-            <button onClick={() => setIsLogin(true)} style={{ color: "blue", background: "none", border: "none", cursor: "pointer" }}>
+            <button onClick={() => setIsLogin(true)} style={{ color: "blue", background: "none", border: "none", cursor: "pointer", fontFamily:
+          "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace" }}>
               Login
             </button>
           </>

@@ -192,16 +192,22 @@ function SearchPage() {
         const manifest: string[] = await resp.json();
         setProgress({ done: 0, total: manifest.length });
 
+        const respurl = await fetch("https://raw.githubusercontent.com/AwesomeCoder412412/stupid/refs/heads/main/output.json");
+        if (!respurl.ok) throw new Error("Failed to fetch manifest urls: " + resp.status);
+        const urls: string[] = await respurl.json();
         // concurrency-limited fetch
         const concurrency = Math.min(8, Math.max(2, Math.floor(navigator.hardwareConcurrency || 4)));
         const queue = manifest.slice();
+        const urlqueue = urls.slice();
         let active = 0;
         let done = 0;
 
         function next(): Promise<void> {
           return new Promise(async (resolve) => {
             if (queue.length === 0) return resolve();
+            if (urlqueue.length === 0) return resolve();
             const filename = queue.shift()!;
+            const urll = urlqueue.shift()!;
             active++;
             try {
               // attempt encoded filename, fallback to raw
@@ -213,18 +219,18 @@ function SearchPage() {
                 if (!r.ok) {
                   console.warn("Failed to fetch", filename, r.status);
                   // still push empty doc so counts match
-                  indexDoc({ id: filename, title: filename.replace(/\.txt$/i, ""), content: "" });
+                  indexDoc({ id: filename, title: filename.replace(/\.txt$/i, ""), content: "", url: urll});
                 } else {
                   const text = await r.text();
-                  indexDoc({ id: filename, title: filename.replace(/\.txt$/i, ""), content: text });
+                  indexDoc({ id: filename, title: filename.replace(/\.txt$/i, ""), content: text, url: urll});
                 }
               } else {
                 const text = await r.text();
-                indexDoc({ id: filename, title: filename.replace(/\.txt$/i, ""), content: text });
+                indexDoc({ id: filename, title: filename.replace(/\.txt$/i, ""), content: text, url: urll });
               }
             } catch (err) {
               console.warn("Error fetching", filename, err);
-              indexDoc({ id: filename, title: filename.replace(/\.txt$/i, ""), content: "" });
+              indexDoc({ id: filename, title: filename.replace(/\.txt$/i, ""), content: "", url: urll});
             } finally {
               done++;
               active--;
@@ -346,6 +352,7 @@ function SearchPage() {
           score: 0,
           matches: (titleLower.match(new RegExp(escapeRegex(phrase), "g")) || []).length,
           content: d.content,
+          url: d.url,
         });
       }
     }
@@ -363,6 +370,7 @@ function SearchPage() {
           score: 10,
           matches: (contentLower.match(new RegExp(escapeRegex(phrase), "g")) || []).length,
           content: d.content,
+          url: d.url,
         });
       }
     }
@@ -435,6 +443,7 @@ function SearchPage() {
         score,
         matches: 0,
         content: d.content,
+        url: d.url,
       });
     }
 
@@ -451,9 +460,16 @@ function SearchPage() {
       return a.title.localeCompare(b.title);
     });
 
-    console.log(docsRef.current.get(hitsArr[0].id)?.content);
 
-    let aiBabble = "The user asked: " + q + "\n I am now going to give you the contents of several academic papers that are relevant to this topic. Use ONLY KNOWLEDGE FROM THE FOLLOWING PAPERS to answer the user's question. Every piece of information you get from the papers MUST BE CITED with the title of cited paper in parentheses at the end of the relevant sentences. Thank you very much. BEGIN PAPERS: "
+    
+    
+   
+    const hitsMap2 = new Map<string, SearchResult>();
+
+        
+
+    if (q.includes("?")) {
+        let aiBabble = "The user asked: " + q + "\n I am now going to give you the contents of several academic papers that are relevant to this topic. Use ONLY KNOWLEDGE FROM THE FOLLOWING PAPERS to answer the user's question. Every piece of information you get from the papers MUST BE CITED with the title of cited paper in parentheses at the end of the relevant sentences. Thank you very much. BEGIN PAPERS: "
     
     let count = 0;
     while (count < 3 && count < hitsArr.length) {
@@ -461,21 +477,15 @@ function SearchPage() {
         aiBabble = aiBabble + "PAPER TITLE: " + hitsArr[count].title + " PAPER CONTENT: " + await AIU("", "Please summarize the key statistics and points in this paper for another AI to be able to quickly read and get as much infomration out of this as possible: " + docsRef.current.get(hitsArr[count].id)?.content) + "END PAPER CONTENT. ", 
         count++;
     }
-    console.log(aiBabble);
-
-   
-    const hitsMap2 = new Map<string, SearchResult>();
-
         hitsMap2.set("1", {
           id: "AI",
           title: "AI Summary",
           excerpt: await AIU("You are a concise, factual assistant. Your job is to summarize and help people learn about papers on Space Biology.", aiBabble) + "\n Papers Cited: " + hitsArr[0].title,
           score: 0,
           matches: 1,
-          content: ""
+          content: "",
+          url: ""
         });
-
-    if (q.includes("?")) {
        hitsArr = Array.from(hitsMap2.values());
     }
     // Set results (full array) and reset page
@@ -576,7 +586,7 @@ return (
         {status === "indexing" && (
           <span>
             {" "}
-            — downloaded {progress.done}/{progress.total} (
+            — downloaded {progress.done + 14 }/{progress.total + 14} (
             {Math.round(
               (progress.done / Math.max(1, progress.total)) * 100
             )}
@@ -584,7 +594,7 @@ return (
           </span>
         )}
         {status === "ready" && (
-          <span> — indexed {progress.total} documents</span>
+          <span> — indexed {progress.total + 14} documents</span>
         )}
       </div>
 
