@@ -59,7 +59,7 @@ const LoginSignup: React.FC = () => {
   return (
     <div style={{ maxWidth: 400, margin: "2rem auto", background: "#DBD7EA", padding: 24, border: "1px solid #ccc", borderRadius: 8, fontFamily:
         "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace" }}>
-      <h2>{isLogin ? "Login" : "Sign Up"}</h2>
+      <h2>{isLogin ? "🔥Login" : "🔥Sign Up"}</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label>Email:</label>

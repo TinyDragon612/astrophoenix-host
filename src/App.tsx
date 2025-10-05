@@ -460,9 +460,16 @@ function SearchPage() {
       return a.title.localeCompare(b.title);
     });
 
-    console.log(docsRef.current.get(hitsArr[0].id)?.content);
 
-    let aiBabble = "The user asked: " + q + "\n I am now going to give you the contents of several academic papers that are relevant to this topic. Use ONLY KNOWLEDGE FROM THE FOLLOWING PAPERS to answer the user's question. Every piece of information you get from the papers MUST BE CITED with the title of cited paper in parentheses at the end of the relevant sentences. Thank you very much. BEGIN PAPERS: "
+    
+    
+   
+    const hitsMap2 = new Map<string, SearchResult>();
+
+        
+
+    if (q.includes("?")) {
+        let aiBabble = "The user asked: " + q + "\n I am now going to give you the contents of several academic papers that are relevant to this topic. Use ONLY KNOWLEDGE FROM THE FOLLOWING PAPERS to answer the user's question. Every piece of information you get from the papers MUST BE CITED with the title of cited paper in parentheses at the end of the relevant sentences. Thank you very much. BEGIN PAPERS: "
     
     let count = 0;
     while (count < 3 && count < hitsArr.length) {
@@ -470,14 +477,6 @@ function SearchPage() {
         aiBabble = aiBabble + "PAPER TITLE: " + hitsArr[count].title + " PAPER CONTENT: " + await AIU("", "Please summarize the key statistics and points in this paper for another AI to be able to quickly read and get as much infomration out of this as possible: " + docsRef.current.get(hitsArr[count].id)?.content) + "END PAPER CONTENT. ", 
         count++;
     }
-    console.log(aiBabble);
-
-   
-    const hitsMap2 = new Map<string, SearchResult>();
-
-        
-
-    if (q.includes("?")) {
         hitsMap2.set("1", {
           id: "AI",
           title: "AI Summary",
