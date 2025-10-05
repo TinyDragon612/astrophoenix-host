@@ -3,6 +3,7 @@ import { MANIFEST_URL, BASE_URL } from "./config";
 import type { Doc, SearchResult } from "./types";
 import Fuse from "fuse.js";
 import AI from "./call_gpt";
+import AIU from "./gptItYourself";
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from "react-router-dom";
 
 import Explore from "./pages/explore";
