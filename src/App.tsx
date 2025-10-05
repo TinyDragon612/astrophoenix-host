@@ -444,7 +444,7 @@ function SearchPage() {
       return a.title.localeCompare(b.title);
     });
     const encoded = encodeURIComponent(hitsArr[0].title);
-    let info = await fetch(BASE_URL + encoded + "..txt");
+    let info = await fetch(BASE_URL + encoded + ".txt");
     console.log (info);
    
     const hitsMap2 = new Map<string, SearchResult>();
