@@ -92,14 +92,14 @@ export default function ExplorePage() {
   const { saved, toggleSaved } = useResults();
 
   return (
-    <div style={{ padding: 20, maxWidth: 1000, margin: "0 auto", fontFamily: "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace" }}>
+    <div style={{ padding: 20, maxWidth: 1000, margin: "0 auto", fontFamily: "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace", background: '#000', color: '#fff' }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
         <h2 style={{ margin: 0 }}>Explore</h2>
         <input
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
           placeholder="Filter titles..."
-          style={{ padding: "8px 10px", borderRadius: 8, border: "1px solid #ddd", minWidth: 220 }}
+          style={{ padding: "8px 10px", borderRadius: 8, border: "1px solid #000000ff", minWidth: 220 }}
         />
       </div>
 
@@ -118,7 +118,7 @@ export default function ExplorePage() {
                 role="button"
                 tabIndex={0}
                 onKeyDown={(e) => { if (e.key === 'Enter') navigate(`/article/${encodeURIComponent(baseId)}`); }}
-                style={{ position: "relative", padding: 12, borderRadius: 10, background: "#fff", border: "1px solid #f0f0f0", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", cursor: "pointer" }}
+                style={{ position: "relative", padding: 12, borderRadius: 10, background: "#0b0b0b", border: "1px solid #151515", boxShadow: "0 1px 3px rgba(255,255,255,0.02)", cursor: "pointer" }}
               >
                 <button
                   onClick={(e) => {
@@ -156,9 +156,9 @@ export default function ExplorePage() {
                   </svg>
                 </button>
 
-                <div style={{ fontWeight: 700, color: "#372554" }}>{it.title}</div>
+                <div style={{ fontWeight: 700, color: "#fff" }}>{it.title}</div>
                 <div style={{ marginTop: 8, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <div style={{ fontSize: 12, color: "#666" }}>
+                  <div style={{ fontSize: 12, color: "#ccc" }}>
                     {it.meta && (it.meta.authors || it.meta.year) ? (
                       <>
                         {it.meta.authors ? <span>{it.meta.authors}</span> : null}

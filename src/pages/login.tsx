@@ -57,9 +57,9 @@ const LoginSignup: React.FC = () => {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: "2rem auto", background: "#DBD7EA", padding: 24, border: "1px solid #ccc", borderRadius: 8, fontFamily:
+    <div style={{ maxWidth: 400, margin: "2rem auto", background: "#0b0b0b", padding: 24, border: "1px solid #151515", borderRadius: 8, color: '#fff', fontFamily:
         "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace" }}>
-      <h2>{isLogin ? "🔥Login" : "🔥Sign Up"}</h2>
+      <h2 style={{ marginTop: 0 }}>{isLogin ? "🔥Login" : "🔥Sign Up"}</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label>Email:</label>
@@ -68,7 +68,7 @@ const LoginSignup: React.FC = () => {
             value={email}
             required
             onChange={e => setEmail(e.target.value)}
-            style={{ width: "100%", marginBottom: 12, borderRadius: 7 }}
+            style={{ width: "100%", marginBottom: 12, borderRadius: 7, padding: 8, border: '1px solid #222', background: '#0b0b0b', color: '#fff' }}
           />
         </div>
         <div>
@@ -78,11 +78,11 @@ const LoginSignup: React.FC = () => {
             value={password}
             required
             onChange={e => setPassword(e.target.value)}
-            style={{ width: "100%", marginBottom: 12, borderRadius: 7 }}
+            style={{ width: "100%", marginBottom: 12, borderRadius: 7, padding: 8, border: '1px solid #222', background: '#0b0b0b', color: '#fff' }}
           />
         </div>
         {error && <div style={{ color: "red", marginBottom: 12 }}>{error}</div>}
-        <button type="submit" style={{ width: "100%", marginTop: 20, marginBottom: 20, padding: 12, background: "#A094C7", border: "none", borderRadius: 7, cursor: "pointer", fontFamily:
+        <button type="submit" style={{ width: "100%", marginTop: 20, marginBottom: 20, padding: 12, background: "#8563f6", border: "none", borderRadius: 7, cursor: "pointer", color: '#fff', fontFamily:
           "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace" }}>
           {isLogin ? "Login" : "Sign Up"}
         </button>
@@ -91,7 +91,7 @@ const LoginSignup: React.FC = () => {
         {isLogin ? (
           <>
             Don't have an account?{" "}
-            <button onClick={() => setIsLogin(false)} style={{ color: "blue", background: "none", border: "none", cursor: "pointer", fontFamily:
+            <button onClick={() => setIsLogin(false)} style={{ color: "#8563f6", background: "none", border: "none", cursor: "pointer", fontFamily:
           "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace" }}>
               Sign Up
             </button>
@@ -99,7 +99,7 @@ const LoginSignup: React.FC = () => {
         ) : (
           <>
             Already have an account?{" "}
-            <button onClick={() => setIsLogin(true)} style={{ color: "blue", background: "none", border: "none", cursor: "pointer", fontFamily:
+            <button onClick={() => setIsLogin(true)} style={{ color: "#8563f6", background: "none", border: "none", cursor: "pointer", fontFamily:
           "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace" }}>
               Login
             </button>
