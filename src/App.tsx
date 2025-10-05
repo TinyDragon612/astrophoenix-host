@@ -3,6 +3,8 @@ import { MANIFEST_URL, BASE_URL } from "./config";
 import type { Doc, SearchResult } from "./types";
 import Fuse from "fuse.js";
 
+import { initializeApp } from 'firebase/app';
+
 /**
  * App.tsx - Incremental indexing, faster search, pagination, highlighting.
  *
