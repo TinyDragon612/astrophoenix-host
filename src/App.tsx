@@ -5,6 +5,9 @@ import Fuse from "fuse.js";
 import AI from "./call_gpt";
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
 
+import explore from "./pages/explore";
+import profile from "./pages/profile";
+
 import { initializeApp } from 'firebase/app';
 
 /**
@@ -450,7 +453,7 @@ return (
         maxWidth: 1000,
         position: "sticky",
         top: 0,
-        background: "#A094C7",
+        background: "#fafafa",
         zIndex: 10,
         boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
         borderRadius: 50,
@@ -661,14 +664,8 @@ return (
 );
 }
 
-function ExplorePage() {
-  return (
-    <div style={{ textAlign: "center", marginTop: 40 }}>
-      <h2>Explore</h2>
-      <p>Visualize data and discover relationships across publications.</p>
-    </div>
-  );
-}
+//PAGES!!!!!
+explore();
 
 function ProfilePage() {
   return (
@@ -681,7 +678,7 @@ function ProfilePage() {
 
 export default function App() {
   return (
-    <Router>
+        <Router>
       <Navbar />
       <Routes>
         <Route path="/" element={<SearchPage />} />
