@@ -82,8 +82,24 @@ const LoginSignup: React.FC = () => {
           />
         </div>
         {error && <div style={{ color: "red", marginBottom: 12 }}>{error}</div>}
-        <button type="submit" style={{ width: "100%", marginTop: 20, marginBottom: 20, padding: 12, background: "#8563f6", border: "none", borderRadius: 7, cursor: "pointer", color: '#fff', fontFamily:
-          "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace" }}>
+        <button
+          type="submit"
+          style={{
+            width: "100%",
+            marginTop: 20,
+            marginBottom: 20,
+            padding: 12,
+            background: "rgba(133,99,246,0.18)",
+            border: "1px solid rgba(133,99,246,0.45)",
+            borderRadius: 10,
+            cursor: "pointer",
+            color: "#f5ecff",
+            boxShadow: "0 0 18px rgba(133,99,246,0.35)",
+            backdropFilter: "blur(6px)",
+            fontFamily:
+              "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace",
+          }}
+        >
           {isLogin ? "Login" : "Sign Up"}
         </button>
       </form>
