@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react
 
 import Explore from "./pages/explore";
 import Profile from "./pages/profile";
+import Saved from "./pages/saved";
 
 import { initializeApp } from 'firebase/app';
 
@@ -63,6 +64,7 @@ function Navbar() {
   const tabs = [
     { path: "/", label: "Search" },
     { path: "/explore", label: "Explore" },
+    { path: "/saved", label: "Saved" },
     { path: "/profile", label: "Profile" },
   ];
 
@@ -673,6 +675,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<SearchPage />} />
         <Route path="/explore" element={<Explore/>} />
+        <Route path="/saved" element={<Saved/>} />
         <Route path="/profile" element={<Profile />} />
       </Routes>
     </Router>
