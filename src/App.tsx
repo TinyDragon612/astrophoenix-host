@@ -574,7 +574,7 @@ export default function App() {
           <Route path="/results" element={<Results/>} />
           <Route path="/saved" element={<Saved/>} />
           <Route path="/profile" element={<Profile />} />
-        <Route path="/article/:id" element={<ArticlePage />} />
+          <Route path="/article/:id" element={<ArticlePage />} />
         </Routes>
       </Router>
     </ResultsProvider>
