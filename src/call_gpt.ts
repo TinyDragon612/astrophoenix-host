@@ -17,7 +17,7 @@ export default async function askGPT(prompt: string, call_type: string) : Promis
         break;
       case "summarize":
         sys = "You are a concise, factual assistant. Your job is to summarize and help people learn about papers on Space Biology."
-        use = "Summarize the following paper(s): [refer to paper(s)]"
+        use = "Summarize the following paper(s): " + prompt
         break;
       case "question":
         sys = "You are a concise, factual assistant. Your job is to summarize and help people learn about papers on Space Biology."
