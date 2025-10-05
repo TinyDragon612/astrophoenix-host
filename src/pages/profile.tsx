@@ -78,7 +78,7 @@ const Profile: React.FC = () => {
     // Update local state
     setUser((prev) =>
       prev
-        ? { ...prev, displayName: newDisplayName, bio: newBio }
+        ? { ...prev, displayName: newDisplayName, bio: newBio, }
         : { displayName: newDisplayName, email: auth.currentUser?.email || "", bio: newBio }
     );
 
@@ -101,7 +101,7 @@ const Profile: React.FC = () => {
         padding: 24,
         border: "1px solid #ddd",
         borderRadius: 8,
-        fontFamily: "system-ui, Segoe UI, Roboto, Arial",
+        fontFamily: "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace",
       }}
     >
       {user.photoURL && (
@@ -127,7 +127,7 @@ const Profile: React.FC = () => {
             <button
               onClick={() => setEditing(true)}
               style={{
-                background: "#007bff",
+                background: "#372554",
                 color: "white",
                 border: "none",
                 padding: "8px 12px",
