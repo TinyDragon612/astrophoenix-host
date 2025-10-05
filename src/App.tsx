@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react
 
 import Explore from "./pages/explore";
 import Profile from "./pages/profile";
+import ArticlePage from "./pages/article";
 
 import { initializeApp } from 'firebase/app';
 
@@ -586,33 +587,39 @@ return (
           <div style={{ color: "#666" }}>No results on this page.</div>
         )}
         {pageResults.map((r) => (
-          <div
+          <Link
             key={r.id}
-            style={{ padding: 12, borderBottom: "1px solid #eee" }}
+            to={`/article/${encodeURIComponent(r.id)}`}
+            style={{ textDecoration: "none", color: "inherit" }}
           >
-            <div style={{ fontSize: 16, fontWeight: 600 }}>
-              <span
-                dangerouslySetInnerHTML={{
-                  __html: highlightHtml(r.title, query),
-                }}
-              />
-            </div>
-            <div style={{ fontSize: 12, color: "#666", margin: "6px 0" }}>
-              {r.matches ? `${r.matches} match(es)` : ""}
-            </div>
-            <div style={{ whiteSpace: "pre-wrap", marginTop: 4 }}>
-              <span
-                dangerouslySetInnerHTML={{
-                  __html: highlightHtml(r.excerpt, query),
-                }}
-              />
-            </div>
             <div
-              style={{ marginTop: 6, fontSize: 12, color: "#999" }}
+              key={r.id}
+              style={{ padding: 12, borderBottom: "1px solid #eee" }}
             >
-              score: {r.score}
+              <div style={{ fontSize: 16, fontWeight: 600 }}>
+                <span
+                  dangerouslySetInnerHTML={{
+                    __html: highlightHtml(r.title, query),
+                  }}
+                />
+              </div>
+              <div style={{ fontSize: 12, color: "#666", margin: "6px 0" }}>
+                {r.matches ? `${r.matches} match(es)` : ""}
+              </div>
+              <div style={{ whiteSpace: "pre-wrap", marginTop: 4 }}>
+                <span
+                  dangerouslySetInnerHTML={{
+                    __html: highlightHtml(r.excerpt, query),
+                  }}
+                />
+              </div>
+              <div
+                style={{ marginTop: 6, fontSize: 12, color: "#999" }}
+              >
+                score: {r.score}
+              </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
 
@@ -674,6 +681,7 @@ export default function App() {
         <Route path="/" element={<SearchPage />} />
         <Route path="/explore" element={<Explore/>} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/article/:id" element={<ArticlePage />} />
       </Routes>
     </Router>
   );
