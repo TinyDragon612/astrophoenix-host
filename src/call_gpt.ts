@@ -23,10 +23,14 @@ export default async function askGPT(prompt: string, call_type: string) : Promis
         sys = "You are a concise, factual assistant. Your job is to summarize and help people learn about papers on Space Biology."
         use = "The user asked: " + prompt + "\n These are the paper(s) in question: [refer to paper(s)]"
         break;
+      case "research":
+        sys = "You are a concise, factual assistant. Your job is to summarize and help people learn about papers on Space Biology."
+        use = "The user asked: " + prompt + "\n I am now going to give you the contents of several academic papers that are relevant to this topic. Use ONLY KNOWLEDGE FROM THE FOLLOWING PAPERS to answer the question. Every piece of information you get from the papers MUST BE CITED with the title of cited paper in parentheses at the end of the relevant sentences. Thank you very much."
+        break;
     }
 
     const response = await client.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-5",
       messages: [
         { role: "system", content: sys },
         { role: "user", content: use },

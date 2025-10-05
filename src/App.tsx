@@ -448,14 +448,24 @@ function SearchPage() {
     let info = await fetch(BASE_URL + encoded + ".txt");
     console.log (info);
 
-    let aiBabble = await AI(q + "Info you can use to help, talk about how you used this info to help: " + info, "question") + "\n Papers Cited: " + hitsArr[0].title;
+    let aiBabble = "The user asked: " + q + "\n I am now going to give you the contents of several academic papers that are relevant to this topic. Use ONLY KNOWLEDGE FROM THE FOLLOWING PAPERS to answer the user's question. Every piece of information you get from the papers MUST BE CITED with the title of cited paper in parentheses at the end of the relevant sentences. Thank you very much. BEGIN PAPERS: "
+    
+    let count = 0;
+    while (count < 5 && count < hitsArr.length) {
+        console.log ("On paper " + count);
+        const encoded = encodeURIComponent(hitsArr[count].title);
+        let info = await fetch(BASE_URL + encoded + ".txt");
+        aiBabble = aiBabble + "PAPER TITLE: " + hitsArr[count].title + " PAPER CONTENT: " + info + "END PAPER CONTENT. ", 
+        count++;
+    }
+
    
     const hitsMap2 = new Map<string, SearchResult>();
 
         hitsMap2.set("1", {
           id: "AI",
           title: "AI Summary",
-          excerpt: aiBabble,
+          excerpt: AIU("You are a concise, factual assistant. Your job is to summarize and help people learn about papers on Space Biology.", aiBabble) + "\n Papers Cited: " + hitsArr[0].title,
           score: 0,
           matches: 1,
           content: ""

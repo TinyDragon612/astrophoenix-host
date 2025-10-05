@@ -5,7 +5,7 @@ const client = new OpenAI({
   apiKey: import.meta.env.VITE_OPENAI_API_KEY, dangerouslyAllowBrowser: true,
 });
 
-export default async function askGPT(prompt: string, sys: string, use: string) : Promise<string> {
+export default async function askGPT(sys: string, use: string) : Promise<string> {
   try {
 
     const response = await client.chat.completions.create({
