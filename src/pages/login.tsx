@@ -57,7 +57,8 @@ const LoginSignup: React.FC = () => {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: "2rem auto", padding: 24, border: "1px solid #ccc", borderRadius: 8 }}>
+    <div style={{ maxWidth: 400, margin: "2rem auto", background: "#DBD7EA", padding: 24, border: "1px solid #ccc", borderRadius: 8, fontFamily:
+        "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace" }}>
       <h2>{isLogin ? "Login" : "Sign Up"}</h2>
       <form onSubmit={handleSubmit}>
         <div>
@@ -81,7 +82,7 @@ const LoginSignup: React.FC = () => {
           />
         </div>
         {error && <div style={{ color: "red", marginBottom: 12 }}>{error}</div>}
-        <button type="submit" style={{ width: "100%", padding: 8 }}>
+        <button type="submit" style={{ width: "100%", padding: 8, background: "#A094C7", border: "none", borderRadius: 4, cursor: "pointer" }}>
           {isLogin ? "Login" : "Sign Up"}
         </button>
       </form>

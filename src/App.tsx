@@ -112,8 +112,11 @@ return (
           marginLeft: "auto",
           background: "none",
           border: "none",
-          color: "white",
+          color: "#fde8ff",
           cursor: "pointer",
+          fontSize: 16,
+          fontFamily:
+          "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace",
         }}
       >
         Logout
