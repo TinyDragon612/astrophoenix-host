@@ -90,14 +90,17 @@ return (
         justifyContent: "center",
         alignItems: "center",
         gap: 24,
-        background: "#baa3ffff",
+        background: "linear-gradient(90deg,#baa3ffcc,#8563f6cc)",
         color: "#fff",
-        padding: "12px 0",
+        padding: "10px 16px",
         position: "sticky",
         top: 0,
         zIndex: 100,
-        borderRadius: 50,
-        margin: 10
+        borderRadius: 12,
+        margin: 10,
+        boxShadow: "0 2px 8px rgba(56,47,84,0.08)",
+        fontFamily:
+          "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace",
       }}
     >
 
@@ -117,26 +120,26 @@ return (
       </button>
     </nav>
 
-      {tabs.map((tab) => (
-        <Link
-          key={tab.path}
-          to={tab.path}
-          style={{
-            textDecoration: "none",
-            color: location.pathname === tab.path ? "#ffffffff" : "#372554",
-            fontWeight: location.pathname === tab.path ? "700" : "400",
-            fontSize: 16,
-            borderBottom:
-              location.pathname === tab.path
-                ? "2px solid #8563f6ff"
-                : "2px solid transparent",
-            paddingBottom: 4,
-            transition: "all 0.2s ease",
-          }}
-        >
-          {tab.label}
-        </Link>
-      ))}
+      <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+        {tabs.map((tab) => (
+          <Link
+            key={tab.path}
+            to={tab.path}
+            style={{
+              textDecoration: "none",
+              color: location.pathname === tab.path ? "#fff" : "#fde8ff",
+              fontWeight: location.pathname === tab.path ? "700" : "600",
+              fontSize: 15,
+              padding: "6px 12px",
+              borderRadius: 999,
+              background: location.pathname === tab.path ? "rgba(0,0,0,0.08)" : "transparent",
+              transition: "all 0.15s ease",
+            }}
+          >
+            {tab.label}
+          </Link>
+        ))}
+      </div>
     </nav>
   );
 }

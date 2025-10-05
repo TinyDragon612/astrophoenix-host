@@ -159,18 +159,47 @@ export default function ResultsPage() {
       <div>
         {pageResults.length === 0 && <div style={{ color: "#666" }}>No results on this page.</div>}
         {pageResults.map((r) => (
-          <div key={r.id} style={{ padding: 12, borderBottom: "1px solid #eee" }}>
-            <div style={{ fontSize: 16, fontWeight: 600 }}>
-              <span dangerouslySetInnerHTML={{ __html: highlightHtml(r.title, activeQuery) }} />
+          <div
+            key={r.id}
+            style={{
+              padding: 16,
+              borderRadius: 10,
+              boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+              border: "1px solid #f0f0f0",
+              marginBottom: 12,
+              background: "#fff",
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 6 }}>
+                  <Link to={`/article/${encodeURIComponent(r.id)}`} style={{ textDecoration: "none", color: "#372554" }}>
+                    <span dangerouslySetInnerHTML={{ __html: highlightHtml(r.title, activeQuery) }} />
+                  </Link>
+                </div>
+                <div style={{ fontSize: 13, color: "#666", marginBottom: 8 }}>{r.matches ? `${r.matches} match(es)` : ""}</div>
+                <div style={{ whiteSpace: "pre-wrap", color: "#222", lineHeight: 1.4 }}>
+                  <span dangerouslySetInnerHTML={{ __html: highlightHtml(r.excerpt, activeQuery) }} />
+                </div>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 8 }}>
+                <div style={{ fontSize: 12, color: "#999" }}>score: {r.score}</div>
+                <button
+                  onClick={() => toggleSaved(r)}
+                  style={{
+                    background: saved.find((s) => s.id === r.id) ? "#8563f6" : "#fff",
+                    color: saved.find((s) => s.id === r.id) ? "#fff" : "#372554",
+                    border: "1px solid #8563f6",
+                    padding: "8px 12px",
+                    borderRadius: 8,
+                    cursor: "pointer",
+                    fontWeight: 600,
+                  }}
+                >
+                  {saved.find((s) => s.id === r.id) ? "Saved" : "Save"}
+                </button>
+              </div>
             </div>
-            <div style={{ position: "absolute", right: 12, top: 12 }}>
-              <button onClick={() => toggleSaved(r)}>{saved.find((s) => s.id === r.id) ? "Unsave" : "Save"}</button>
-            </div>
-            <div style={{ fontSize: 12, color: "#666", margin: "6px 0" }}>{r.matches ? `${r.matches} match(es)` : ""}</div>
-            <div style={{ whiteSpace: "pre-wrap", marginTop: 4 }}>
-              <span dangerouslySetInnerHTML={{ __html: highlightHtml(r.excerpt, activeQuery) }} />
-            </div>
-            <div style={{ marginTop: 6, fontSize: 12, color: "#999" }}>score: {r.score}</div>
           </div>
         ))}
       </div>
