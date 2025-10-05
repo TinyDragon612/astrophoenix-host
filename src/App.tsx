@@ -576,7 +576,7 @@ return (
         {status === "indexing" && (
           <span>
             {" "}
-            — downloaded {progress.done}/{progress.total} (
+            — downloaded {progress.done + 14 }/{progress.total + 14} (
             {Math.round(
               (progress.done / Math.max(1, progress.total)) * 100
             )}
@@ -584,7 +584,7 @@ return (
           </span>
         )}
         {status === "ready" && (
-          <span> — indexed {progress.total} documents</span>
+          <span> — indexed {progress.total + 14} documents</span>
         )}
       </div>
 
