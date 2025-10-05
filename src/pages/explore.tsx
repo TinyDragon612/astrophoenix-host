@@ -99,7 +99,7 @@ export default function ExplorePage() {
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
           placeholder="Filter titles..."
-          style={{ padding: "8px 10px", borderRadius: 8, border: "1px solid #000000ff", minWidth: 220 }}
+          style={{ padding: "8px 10px", borderRadius: 8, border: "1px solid #333", minWidth: 220, background: 'transparent', color: '#fff' }}
         />
       </div>
 
@@ -137,26 +137,34 @@ export default function ExplorePage() {
                   aria-label={isSaved ? "Unsave" : "Save"}
                   title={isSaved ? "Unsave" : "Save"}
                   style={{
-                    position: "absolute",
-                    right: 8,
-                    top: 8,
-                    background: "transparent",
-                    border: "none",
-                    padding: 6,
-                    borderRadius: 6,
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
+                      position: "absolute",
+                      right: 8,
+                      top: 8,
+                      padding: 6,
+                      borderRadius: 10,
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      background: isSaved ? "rgba(133,99,246,0.18)" : "#222",
+                      border: isSaved ? "1px solid rgba(133,99,246,0.45)" : "1px solid #444",
+                      boxShadow: isSaved ? "0 0 14px rgba(133,99,246,0.35)" : "none",
+                      backdropFilter: isSaved ? "blur(4px)" : "none",
+                      transition: "all 0.18s ease",
                   }}
                 >
                   {/* bookmark icon */}
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block' }}>
-                    <path d="M6 2C5.44772 2 5 2.44772 5 3V21.2929C5 21.6834 5.38604 21.8985 5.70711 21.7071L12 17.1213L18.2929 21.7071C18.6139 21.8985 19 21.6834 19 21.2929V3C19 2.44772 18.5523 2 18 2H6Z" fill={isSaved ? '#8563f6' : 'transparent'} stroke={isSaved ? '#8563f6' : '#999'} strokeWidth="1.2" />
+                      <path
+                        d="M6 2C5.44772 2 5 2.44772 5 3V21.2929C5 21.6834 5.38604 21.8985 5.70711 21.7071L12 17.1213L18.2929 21.7071C18.6139 21.8985 19 21.6834 19 21.2929V3C19 2.44772 18.5523 2 18 2H6Z"
+                        fill={isSaved ? "rgba(133,99,246,0.35)" : "transparent"}
+                        stroke={isSaved ? "#8563f6" : "#888"}
+                        strokeWidth="1.2"
+                      />
                   </svg>
                 </button>
 
-                <div style={{ fontWeight: 700, color: "#fff" }}>{it.title}</div>
+                <div style={{ fontWeight: 700, color: "#fff", paddingRight: 44 }}>{it.title}</div>
                 <div style={{ marginTop: 8, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <div style={{ fontSize: 12, color: "#ccc" }}>
                     {it.meta && (it.meta.authors || it.meta.year) ? (

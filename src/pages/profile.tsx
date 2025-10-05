@@ -129,13 +129,15 @@ const Profile: React.FC = () => {
             <button
               onClick={() => setEditing(true)}
               style={{
-                background: "#8563f6",
-                color: "white",
-                border: "none",
+                background: "rgba(255,255,255,0.05)",
+                color: "#fde8ff",
+                border: "1px solid rgba(255,255,255,0.12)",
                 padding: "8px 12px",
-                borderRadius: 6,
+                borderRadius: 10,
                 cursor: "pointer",
                 marginRight: 8,
+                backdropFilter: "blur(6px)",
+                boxShadow: "0 2px 10px rgba(0,0,0,0.35)",
               }}
             >
               Edit Profile
@@ -150,12 +152,14 @@ const Profile: React.FC = () => {
                 }
               }}
               style={{
-                background: "#e53935",
-                color: "white",
-                border: "none",
+                background: "rgba(229,57,53,0.18)",
+                color: "#ffb4b2",
+                border: "1px solid rgba(229,57,53,0.45)",
                 padding: "8px 12px",
-                borderRadius: 6,
+                borderRadius: 10,
                 cursor: "pointer",
+                backdropFilter: "blur(6px)",
+                boxShadow: "0 2px 12px rgba(229,57,53,0.25)",
               }}
             >
               Logout

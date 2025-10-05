@@ -90,40 +90,23 @@ return (
         justifyContent: "center",
         alignItems: "center",
         gap: 24,
-        background: "linear-gradient(90deg, rgba(186,163,255,0.18), rgba(133,99,246,0.18))",
+        background: "linear-gradient(90deg, rgba(186,163,255,0.15), rgba(133,99,246,0.2))",
         color: "#fff",
         padding: "10px 16px",
         position: "sticky",
         top: 0,
         zIndex: 100,
-        borderRadius: 12,
+        borderRadius: 14,
         margin: 10,
-        border: "1px solid rgba(255,255,255,0.08)",
-        boxShadow: "0 2px 12px rgba(0,0,0,0.25)",
+        border: "1px solid rgba(133,99,246,0.25)",
+        boxShadow: "0 6px 18px rgba(0,0,0,0.35)",
         backdropFilter: "blur(10px)",
+        textShadow: "0 0 6px rgba(133,99,246,0.25)",
         fontFamily:
           "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace",
+        transition: "box-shadow 0.2s ease",
       }}
     >
-
-      <nav>
-      {/* ... your tab links ... */}
-      <button
-        onClick={() => signOut(auth)}
-        style={{
-          marginLeft: "auto",
-          background: "none",
-          border: "none",
-          color: "#fde8ff",
-          cursor: "pointer",
-          fontSize: 16,
-          fontFamily:
-          "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace",
-        }}
-      >
-        Logout
-      </button>
-    </nav>
 
       <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
         {tabs.map((tab) => (
@@ -557,7 +540,10 @@ return (
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        height: "100vh",
+        minHeight: "calc(100vh - 120px)",
+        padding: "80px 16px 60px",
+        width: "100%",
+        boxSizing: "border-box",
         background: "#000",
         color: "#fff",
         fontFamily:
@@ -570,11 +556,12 @@ return (
           textAlign: "center",
           padding: "40px 24px",
           width: "100%",
-          maxWidth: 1000,
+          maxWidth: 960,
           position: "relative",
+          margin: "0 auto",
           background: "#0b0b0b",
           zIndex: 10,
-          boxShadow: "0 2px 8px rgba(255,255,255,0.03)",
+          boxShadow: "0 0 30px rgba(0,0,0,0.5), 0 0 24px rgba(255,255,255,0.08)",
           borderRadius: 50,
           border: "1px solid #151515",
         }}
@@ -622,12 +609,12 @@ return (
             padding: "10px 14px",
             minWidth: 300,
             borderRadius: 9999,
-            border: "1px solid #222",
-            background: "#0b0b0b",
+            border: "1px solid #333",
+            background: "transparent",
             color: "#fff",
             outline: "none",
             transition: "all 0.2s ease",
-            boxShadow: "0 1px 3px rgba(255,255,255,0.02)",
+            boxShadow: "none",
           }}
           onFocus={(e) => (e.target.style.border = "1px solid #444")}
           onBlur={(e) => (e.target.style.border = "1px solid #222")}
@@ -637,8 +624,16 @@ return (
           disabled={!query || (status === "indexing" && progress.done === 0)}
           style={{
             borderRadius: 9999,
-            padding: "10px 16px",
+            padding: "14px 26px",
             cursor: "pointer",
+            background: "rgba(133,99,246,0.2)",
+            border: "1px solid rgba(133,99,246,0.45)",
+            color: "#f5ecff",
+            fontWeight: 600,
+            letterSpacing: 0.5,
+            boxShadow: "0 0 18px rgba(133,99,246,0.35)",
+            backdropFilter: "blur(6px)",
+            transition: "all 0.2s ease",
           }}
         >
           Search
@@ -647,11 +642,24 @@ return (
           onClick={() => doSearch(query)}
           style={{
             borderRadius: 9999,
-            padding: "10px 16px",
+            padding: "10px 14px",
             cursor: "pointer",
+            background: "rgba(255,255,255,0.04)",
+            border: "1px solid #333",
+            color: "#ccc",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 18,
+            lineHeight: 1,
+            width: 48,
+            height: 48,
+            boxShadow: "0 0 10px rgba(0,0,0,0.35)",
+            transition: "all 0.2s ease",
           }}
+          aria-label="Refresh results"
         >
-          Refresh
+          ↻
         </button>
       </div>
     </div>

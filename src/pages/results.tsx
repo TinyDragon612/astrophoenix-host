@@ -129,7 +129,7 @@ export default function ResultsPage() {
           <button onClick={() => navigate(-1)} style={{ marginRight: 8, background: "transparent", border: "1px solid #333", color: "#fff", padding: "6px 10px", borderRadius: 6, cursor: "pointer" }}>Back</button>
           <label style={{ fontSize: 13, color: "#ccc" }}>
             Page size:
-            <select value={pageSize} onChange={(e) => { setPageSize(Number(e.target.value)); setPage(1); }} style={{ marginLeft: 6 }}>
+            <select value={pageSize} onChange={(e) => { setPageSize(Number(e.target.value)); setPage(1); }} style={{ marginLeft: 6, background: '#0b0b0b', color: '#fff', border: '1px solid #222', padding: '6px 8px', borderRadius: 6 }}>
               {[5, 10, 20, 50].map((n) => (
                 <option key={n} value={n}>{n}</option>
               ))}
@@ -152,59 +152,78 @@ export default function ResultsPage() {
               }
             }}
           />
-          <button onClick={() => performLocalSearch(queryInput)} style={{ background: "#8563f6", color: "#fff", border: "none", padding: "8px 12px", borderRadius: 8, cursor: "pointer" }}>Search</button>
+          <button
+            onClick={() => performLocalSearch(queryInput)}
+            style={{
+              background: "rgba(133,99,246,0.18)",
+              color: "#f5ecff",
+              border: "1px solid rgba(133,99,246,0.45)",
+              padding: "8px 12px",
+              borderRadius: 10,
+              cursor: "pointer",
+              boxShadow: "0 0 16px rgba(133,99,246,0.35)",
+              backdropFilter: "blur(6px)",
+            }}
+          >
+            Search
+          </button>
         </div>
       </div>
 
       <div>
         {pageResults.length === 0 && <div style={{ color: "#888" }}>No results on this page.</div>}
-        {pageResults.map((r) => (
-          <div
-            key={r.id}
-            style={{
-              padding: 16,
-              borderRadius: 10,
-              boxShadow: "0 1px 3px rgba(255,255,255,0.02)",
-              border: "1px solid #151515",
-              marginBottom: 12,
-              background: "#0b0b0b",
-            }}
-          >
-            <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 6 }}>
-                  <Link to={`/article/${encodeURIComponent(r.id)}`} style={{ textDecoration: "none", color: "#fff", fontFamily: "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace" }}>
-                    <span dangerouslySetInnerHTML={{ __html: highlightHtml(r.title, activeQuery) }} />
-                  </Link>
+        {pageResults.map((r) => {
+          const isSaved = saved.find((s) => s.id === r.id);
+          return (
+            <div
+              key={r.id}
+              style={{
+                padding: 16,
+                borderRadius: 10,
+                boxShadow: "0 1px 3px rgba(255,255,255,0.02)",
+                border: "1px solid #151515",
+                marginBottom: 12,
+                background: "#0b0b0b",
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 6 }}>
+                    <Link to={`/article/${encodeURIComponent(r.id)}`} style={{ textDecoration: "none", color: "#fff", fontFamily: "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace" }}>
+                      <span dangerouslySetInnerHTML={{ __html: highlightHtml(r.title, activeQuery) }} />
+                    </Link>
+                  </div>
+                  <div style={{ fontSize: 13, color: "#ccc", marginBottom: 8 }}>{r.matches ? `${r.matches} match(es)` : ""}</div>
+                  <div style={{ whiteSpace: "pre-wrap", color: "#ccc", lineHeight: 1.4 }}>
+                    <span dangerouslySetInnerHTML={{ __html: highlightHtml(r.excerpt, activeQuery) }} />
+                  </div>
                 </div>
-                <div style={{ fontSize: 13, color: "#ccc", marginBottom: 8 }}>{r.matches ? `${r.matches} match(es)` : ""}</div>
-                <div style={{ whiteSpace: "pre-wrap", color: "#ccc", lineHeight: 1.4 }}>
-                  <span dangerouslySetInnerHTML={{ __html: highlightHtml(r.excerpt, activeQuery) }} />
-                </div>
-              </div>
 
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 8 }}>
-                <div style={{ fontSize: 12, color: "#bbb" }}>score: {r.score}</div>
-                <div>
-                  <button
-                    onClick={() => toggleSaved(r)}
-                    style={{
-                      background: saved.find((s) => s.id === r.id) ? "#8563f6" : "transparent",
-                      color: "#fff",
-                      border: saved.find((s) => s.id === r.id) ? "1px solid #8563f6" : "1px solid #333",
-                      padding: "8px 12px",
-                      borderRadius: 8,
-                      cursor: "pointer",
-                      fontWeight: 600,
-                    }}
-                  >
-                    {saved.find((s) => s.id === r.id) ? "Saved" : "Save"}
-                  </button>
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 8 }}>
+                  <div style={{ fontSize: 12, color: "#bbb" }}>score: {r.score}</div>
+                  <div>
+                    <button
+                      onClick={() => toggleSaved(r)}
+                      style={{
+                        background: isSaved ? "rgba(133,99,246,0.18)" : "transparent",
+                        color: isSaved ? "#f5ecff" : "#fff",
+                        border: isSaved ? "1px solid rgba(133,99,246,0.45)" : "1px solid #333",
+                        padding: "8px 12px",
+                        borderRadius: 10,
+                        cursor: "pointer",
+                        fontWeight: 600,
+                        boxShadow: isSaved ? "0 0 16px rgba(133,99,246,0.35)" : "none",
+                        backdropFilter: isSaved ? "blur(4px)" : "none",
+                      }}
+                    >
+                      {isSaved ? "Saved" : "Save"}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <div style={{ display: "flex", gap: 8, justifyContent: "center", marginTop: 16, flexWrap: "wrap" }}>
