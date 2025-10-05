@@ -207,7 +207,7 @@ export default function App() {
 
   // search function using hybrid approach
   async function doSearch(q: string) {
-    
+
     q = q.trim();
     setQuery(q);
     setResults([]);
