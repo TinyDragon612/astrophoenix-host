@@ -439,41 +439,6 @@ return (
         "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace",
     }}
   >
-    {/* NAVIGATION BAR */}
-      <nav
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: 24,
-          background: "#111",
-          color: "#fff",
-          padding: "12px 0",
-          position: "sticky",
-          top: 0,
-          zIndex: 100,
-        }}
-      >{["search", "explore", "profile"].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            style={{
-              background: "none",
-              border: "none",
-              color: activeTab === tab ? "#f39c12" : "#fff",
-              fontWeight: activeTab === tab ? "700" : "400",
-              cursor: "pointer",
-              fontSize: 16,
-              borderBottom:
-                activeTab === tab ? "2px solid #f39c12" : "2px solid transparent",
-              paddingBottom: 4,
-              transition: "all 0.2s ease",
-            }}
-          >
-            {tab.charAt(0).toUpperCase() + tab.slice(1)}
-          </button>
-        ))}
-      </nav>
     {/* PAGE CONTENT AREA */}
     <div
       style={{
