@@ -447,13 +447,15 @@ function SearchPage() {
     const encoded = encodeURIComponent(hitsArr[0].title);
     let info = await fetch(BASE_URL + encoded + ".txt");
     console.log (info);
+
+    let aiBabble = await AI(q + "Info you can use to help, talk about how you used this info to help: " + info, "question") + "\n Papers Cited: " + hitsArr[0].title;
    
     const hitsMap2 = new Map<string, SearchResult>();
 
         hitsMap2.set("1", {
           id: "AI",
           title: "AI Summary",
-          excerpt: await AI(q + "Info you can use to help, talk about how you used this info to help: " + info, "question") + "\n Papers Cited: " + hitsArr[0].title,
+          excerpt: aiBabble,
           score: 0,
           matches: 1,
           content: ""
