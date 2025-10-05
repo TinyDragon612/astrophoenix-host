@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useResults } from "../context/ResultsContext";
 import { MANIFEST_URL, BASE_URL } from "../config";
 
 function titleFromFilename(f: string) {
@@ -87,6 +88,9 @@ export default function ExplorePage() {
     return mapped.filter((m) => m.title.toLowerCase().includes(q));
   }, [files, filter, metaMap]);
 
+  const navigate = useNavigate();
+  const { saved, toggleSaved } = useResults();
+
   return (
     <div style={{ padding: 20, maxWidth: 1000, margin: "0 auto", fontFamily: "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
@@ -104,13 +108,54 @@ export default function ExplorePage() {
 
       {files && (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 12 }}>
-          {items.map((it) => (
-            <Link
-              key={it.file}
-              to={`/article/${encodeURIComponent(it.file.replace(/\.txt$/i, ""))}`}
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              <div style={{ padding: 12, borderRadius: 10, background: "#fff", border: "1px solid #f0f0f0", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", cursor: "pointer" }}>
+          {items.map((it) => {
+            const baseId = it.file.replace(/\.txt$/i, "");
+            const isSaved = saved.find((s) => s.id === baseId);
+            return (
+              <div
+                key={it.file}
+                onClick={() => navigate(`/article/${encodeURIComponent(baseId)}`)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => { if (e.key === 'Enter') navigate(`/article/${encodeURIComponent(baseId)}`); }}
+                style={{ position: "relative", padding: 12, borderRadius: 10, background: "#fff", border: "1px solid #f0f0f0", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", cursor: "pointer" }}
+              >
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const sr = {
+                      id: baseId,
+                      title: it.title,
+                      excerpt: "",
+                      score: 0,
+                      matches: 0,
+                      content: "",
+                      url: BASE_URL + encodeURIComponent(it.file),
+                    };
+                    toggleSaved(sr);
+                  }}
+                  aria-label={isSaved ? "Unsave" : "Save"}
+                  title={isSaved ? "Unsave" : "Save"}
+                  style={{
+                    position: "absolute",
+                    right: 8,
+                    top: 8,
+                    background: "transparent",
+                    border: "none",
+                    padding: 6,
+                    borderRadius: 6,
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {/* bookmark icon */}
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block' }}>
+                    <path d="M6 2C5.44772 2 5 2.44772 5 3V21.2929C5 21.6834 5.38604 21.8985 5.70711 21.7071L12 17.1213L18.2929 21.7071C18.6139 21.8985 19 21.6834 19 21.2929V3C19 2.44772 18.5523 2 18 2H6Z" fill={isSaved ? '#8563f6' : 'transparent'} stroke={isSaved ? '#8563f6' : '#999'} strokeWidth="1.2" />
+                  </svg>
+                </button>
+
                 <div style={{ fontWeight: 700, color: "#372554" }}>{it.title}</div>
                 <div style={{ marginTop: 8, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <div style={{ fontSize: 12, color: "#666" }}>
@@ -126,8 +171,8 @@ export default function ExplorePage() {
                   </div>
                 </div>
               </div>
-            </Link>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
