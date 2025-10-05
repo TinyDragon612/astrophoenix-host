@@ -122,12 +122,12 @@ export default function ResultsPage() {
   const pageResults = useMemo(() => results.slice((page - 1) * pageSize, page * pageSize), [results, page, pageSize]);
 
   return (
-    <div style={{ padding: 20, maxWidth: 1000, margin: "0 auto" }}>
+    <div style={{ padding: 20, maxWidth: 1000, margin: "0 auto", color: "#fff", background: "#000", fontFamily: "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-        <h2>Results</h2>
+        <h2 style={{ margin: 0 }}>Results</h2>
         <div>
-          <button onClick={() => navigate(-1)} style={{ marginRight: 8 }}>Back</button>
-          <label style={{ fontSize: 13, color: "#666" }}>
+          <button onClick={() => navigate(-1)} style={{ marginRight: 8, background: "transparent", border: "1px solid #333", color: "#fff", padding: "6px 10px", borderRadius: 6, cursor: "pointer" }}>Back</button>
+          <label style={{ fontSize: 13, color: "#ccc" }}>
             Page size:
             <select value={pageSize} onChange={(e) => { setPageSize(Number(e.target.value)); setPage(1); }} style={{ marginLeft: 6 }}>
               {[5, 10, 20, 50].map((n) => (
@@ -139,65 +139,68 @@ export default function ResultsPage() {
       </div>
 
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-  <div style={{ color: "#666" }}>{results.length} result{results.length !== 1 ? "s" : ""} {activeQuery ? <>for "{activeQuery}"</> : null}</div>
+  <div style={{ color: "#ccc" }}>{results.length} result{results.length !== 1 ? "s" : ""} {activeQuery ? <>for "{activeQuery}"</> : null}</div>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <input
             value={queryInput}
             onChange={(e) => setQueryInput(e.target.value)}
             placeholder="refine query"
-            style={{ padding: "6px 8px", borderRadius: 6, border: "1px solid #ccc" }}
+            style={{ padding: "8px 10px", borderRadius: 8, border: "1px solid #222", background: "#0b0b0b", color: "#fff", outline: "none" }}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 performLocalSearch(queryInput);
               }
             }}
           />
-          <button onClick={() => performLocalSearch(queryInput)}>Search</button>
+          <button onClick={() => performLocalSearch(queryInput)} style={{ background: "#8563f6", color: "#fff", border: "none", padding: "8px 12px", borderRadius: 8, cursor: "pointer" }}>Search</button>
         </div>
       </div>
 
       <div>
-        {pageResults.length === 0 && <div style={{ color: "#666" }}>No results on this page.</div>}
+        {pageResults.length === 0 && <div style={{ color: "#888" }}>No results on this page.</div>}
         {pageResults.map((r) => (
           <div
             key={r.id}
             style={{
               padding: 16,
               borderRadius: 10,
-              boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
-              border: "1px solid #f0f0f0",
+              boxShadow: "0 1px 3px rgba(255,255,255,0.02)",
+              border: "1px solid #151515",
               marginBottom: 12,
-              background: "#fff",
+              background: "#0b0b0b",
             }}
           >
             <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 6 }}>
-                  <Link to={`/article/${encodeURIComponent(r.id)}`} style={{ textDecoration: "none", color: "#372554" }}>
+                  <Link to={`/article/${encodeURIComponent(r.id)}`} style={{ textDecoration: "none", color: "#fff", fontFamily: "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace" }}>
                     <span dangerouslySetInnerHTML={{ __html: highlightHtml(r.title, activeQuery) }} />
                   </Link>
                 </div>
-                <div style={{ fontSize: 13, color: "#666", marginBottom: 8 }}>{r.matches ? `${r.matches} match(es)` : ""}</div>
-                <div style={{ whiteSpace: "pre-wrap", color: "#222", lineHeight: 1.4 }}>
+                <div style={{ fontSize: 13, color: "#ccc", marginBottom: 8 }}>{r.matches ? `${r.matches} match(es)` : ""}</div>
+                <div style={{ whiteSpace: "pre-wrap", color: "#ccc", lineHeight: 1.4 }}>
                   <span dangerouslySetInnerHTML={{ __html: highlightHtml(r.excerpt, activeQuery) }} />
                 </div>
               </div>
+
               <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 8 }}>
-                <div style={{ fontSize: 12, color: "#999" }}>score: {r.score}</div>
-                <button
-                  onClick={() => toggleSaved(r)}
-                  style={{
-                    background: saved.find((s) => s.id === r.id) ? "#8563f6" : "#fff",
-                    color: saved.find((s) => s.id === r.id) ? "#fff" : "#372554",
-                    border: "1px solid #8563f6",
-                    padding: "8px 12px",
-                    borderRadius: 8,
-                    cursor: "pointer",
-                    fontWeight: 600,
-                  }}
-                >
-                  {saved.find((s) => s.id === r.id) ? "Saved" : "Save"}
-                </button>
+                <div style={{ fontSize: 12, color: "#bbb" }}>score: {r.score}</div>
+                <div>
+                  <button
+                    onClick={() => toggleSaved(r)}
+                    style={{
+                      background: saved.find((s) => s.id === r.id) ? "#8563f6" : "transparent",
+                      color: "#fff",
+                      border: saved.find((s) => s.id === r.id) ? "1px solid #8563f6" : "1px solid #333",
+                      padding: "8px 12px",
+                      borderRadius: 8,
+                      cursor: "pointer",
+                      fontWeight: 600,
+                    }}
+                  >
+                    {saved.find((s) => s.id === r.id) ? "Saved" : "Save"}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -205,11 +208,11 @@ export default function ResultsPage() {
       </div>
 
       <div style={{ display: "flex", gap: 8, justifyContent: "center", marginTop: 16, flexWrap: "wrap" }}>
-        <button onClick={() => setPage(1)} disabled={page === 1}>« First</button>
-        <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1}>‹ Prev</button>
-        <div style={{ padding: "6px 10px", border: "1px solid #eee", borderRadius: 6, minWidth: 120, textAlign: "center" }}>Page {page} of {totalPages}</div>
-        <button onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page === totalPages}>Next ›</button>
-        <button onClick={() => setPage(totalPages)} disabled={page === totalPages}>Last »</button>
+        <button onClick={() => setPage(1)} disabled={page === 1} style={{ background: "transparent", border: "1px solid #333", color: "#fff", padding: "6px 10px", borderRadius: 6, cursor: "pointer" }}>« First</button>
+        <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1} style={{ background: "transparent", border: "1px solid #333", color: "#fff", padding: "6px 10px", borderRadius: 6, cursor: "pointer" }}>‹ Prev</button>
+        <div style={{ padding: "6px 10px", border: "1px solid #151515", borderRadius: 6, minWidth: 120, textAlign: "center", background: "#0b0b0b", color: '#fff' }}>Page {page} of {totalPages}</div>
+        <button onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page === totalPages} style={{ background: "transparent", border: "1px solid #333", color: "#fff", padding: "6px 10px", borderRadius: 6, cursor: "pointer" }}>Next ›</button>
+        <button onClick={() => setPage(totalPages)} disabled={page === totalPages} style={{ background: "transparent", border: "1px solid #333", color: "#fff", padding: "6px 10px", borderRadius: 6, cursor: "pointer" }}>Last »</button>
       </div>
     </div>
   );

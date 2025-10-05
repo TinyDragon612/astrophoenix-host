@@ -114,7 +114,8 @@ export default function ArticlePage() {
         padding: "32px 20px 80px",
         display: "flex",
         justifyContent: "center",
-        background: "#fafafa",
+        background: "#000",
+        color: "#fff",
         fontFamily:
           "Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif",
       }}
@@ -132,17 +133,18 @@ export default function ArticlePage() {
         {doc && (
           <article
             style={{
-              background: "#fff",
+              background: "#0b0b0b",
               borderRadius: 16,
-              boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+              boxShadow: "0 2px 8px rgba(255,255,255,0.03)",
               padding: "40px 60px",
               maxWidth: 900,
               margin: "0 auto",
+              border: "1px solid #151515",
               fontFamily:
         "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace"
             }}
           >
-            <h1 style={{ marginTop: 0, color: "#372554", letterSpacing: 0.3 }}>
+            <h1 style={{ marginTop: 0, color: "#fff", letterSpacing: 0.3 }}>
               {doc.title}
             </h1>
 
@@ -167,10 +169,11 @@ export default function ArticlePage() {
                 style={{
                   marginTop: 20,
                   padding: "16px 18px",
-                  background: "#f6f5fb",
-                  border: "1px solid #e8e6f5",
+                  background: "#121212",
+                  border: "1px solid #222",
                   borderRadius: 12,
                   whiteSpace: "pre-wrap",
+                  color: "#ddd",
                 }}
               >
                 {summary}

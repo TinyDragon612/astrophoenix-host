@@ -99,9 +99,11 @@ const Profile: React.FC = () => {
         maxWidth: 450,
         margin: "2rem auto",
         padding: 24,
-        border: "1px solid #ddd",
+        border: "1px solid #151515",
         borderRadius: 8,
         fontFamily: "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace",
+        background: "#0b0b0b",
+        color: "#fff",
       }}
     >
       {user.photoURL && (
@@ -114,7 +116,7 @@ const Profile: React.FC = () => {
 
       {!editing ? (
         <>
-          <h2>{user.displayName || "Unnamed User"}</h2>
+          <h2 style={{ marginTop: 0 }}>{user.displayName || "Unnamed User"}</h2>
           <p>
             <strong>Email:</strong> {user.email}
           </p>
@@ -127,7 +129,7 @@ const Profile: React.FC = () => {
             <button
               onClick={() => setEditing(true)}
               style={{
-                background: "#372554",
+                background: "#8563f6",
                 color: "white",
                 border: "none",
                 padding: "8px 12px",
@@ -171,7 +173,7 @@ const Profile: React.FC = () => {
               type="text"
               value={newDisplayName}
               onChange={(e) => setNewDisplayName(e.target.value)}
-              style={{ width: "100%", padding: 8, borderRadius: 6, border: "1px solid #ccc", marginTop: 4 }}
+              style={{ width: "100%", padding: 8, borderRadius: 6, border: "1px solid #222", marginTop: 4, background: '#0b0b0b', color: '#fff' }}
             />
           </div>
           <div style={{ marginBottom: 12 }}>
@@ -182,18 +184,18 @@ const Profile: React.FC = () => {
               value={newBio}
               onChange={(e) => setNewBio(e.target.value)}
               rows={4}
-              style={{ width: "100%", padding: 8, borderRadius: 6, border: "1px solid #ccc", marginTop: 4, resize: "none" }}
+              style={{ width: "100%", padding: 8, borderRadius: 6, border: "1px solid #222", marginTop: 4, resize: "none", background: '#0b0b0b', color: '#fff' }}
             />
           </div>
           <button
             onClick={handleSave}
-            style={{ padding: "8px 16px", borderRadius: 8, border: "none", background: "green", color: "white", cursor: "pointer", marginRight: 8 }}
+            style={{ padding: "8px 16px", borderRadius: 8, border: "none", background: "#2e8b57", color: "white", cursor: "pointer", marginRight: 8 }}
           >
             Save
           </button>
           <button
             onClick={() => setEditing(false)}
-            style={{ padding: "8px 16px", borderRadius: 8, border: "1px solid #ccc", background: "#f8f8f8", cursor: "pointer" }}
+            style={{ padding: "8px 16px", borderRadius: 8, border: "1px solid #333", background: "#0b0b0b", color: '#fff', cursor: "pointer" }}
           >
             Cancel
           </button>

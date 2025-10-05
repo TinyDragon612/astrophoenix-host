@@ -90,7 +90,7 @@ return (
         justifyContent: "center",
         alignItems: "center",
         gap: 24,
-        background: "linear-gradient(90deg,#baa3ffcc,#8563f6cc)",
+        background: "linear-gradient(90deg, rgba(186,163,255,0.18), rgba(133,99,246,0.18))",
         color: "#fff",
         padding: "10px 16px",
         position: "sticky",
@@ -98,7 +98,9 @@ return (
         zIndex: 100,
         borderRadius: 12,
         margin: 10,
-        boxShadow: "0 2px 8px rgba(56,47,84,0.08)",
+        border: "1px solid rgba(255,255,255,0.08)",
+        boxShadow: "0 2px 12px rgba(0,0,0,0.25)",
+        backdropFilter: "blur(10px)",
         fontFamily:
           "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace",
       }}
@@ -135,7 +137,8 @@ return (
               fontSize: 15,
               padding: "6px 12px",
               borderRadius: 999,
-              background: location.pathname === tab.path ? "rgba(0,0,0,0.08)" : "transparent",
+              background: location.pathname === tab.path ? "rgba(0,0,0,0.45)" : "transparent",
+              boxShadow: location.pathname === tab.path ? "0 0 12px rgba(0,0,0,0.35)" : "none",
               transition: "all 0.15s ease",
             }}
           >
@@ -548,40 +551,42 @@ function SearchPage() {
   const pageResults = results.slice((page - 1) * pageSize, page * pageSize);
 
 return (
-  <div
-    style={{
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      height: "100vh",
-      background: "#fafafa",
-      fontFamily:
-        "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace",
-    }}
-  >
-    {/* PAGE CONTENT AREA */}
     <div
       style={{
-        textAlign: "center",
-        padding: "40px 24px",
-        width: "100%",
-        maxWidth: 1000,
-        position: "relative",
-        background: "#fff",
-        zIndex: 10,
-        boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
-        borderRadius: 50,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100vh",
+        background: "#000",
+        color: "#fff",
+        fontFamily:
+          "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace",
       }}
     >
-      <h1 style={{ margin: "0 0 8px", color: "#372554", letterSpacing: 10 }}>💫AstroPhoenix</h1>
-      <p style={{ color: "#372554", margin: "0 0 16px" }}>
+    {/* PAGE CONTENT AREA */}
+      <div
+        style={{
+          textAlign: "center",
+          padding: "40px 24px",
+          width: "100%",
+          maxWidth: 1000,
+          position: "relative",
+          background: "#0b0b0b",
+          zIndex: 10,
+          boxShadow: "0 2px 8px rgba(255,255,255,0.03)",
+          borderRadius: 50,
+          border: "1px solid #151515",
+        }}
+      >
+      <h1 style={{ margin: "0 0 8px", color: "#fff", letterSpacing: 10 }}>🔥AstroPhoenix</h1>
+      <p style={{ color: "#ccc", margin: "0 0 16px" }}>
         Search keywords and research questions across all 608 papers.
       </p>
 
       {error && <div style={{ color: "red", marginBottom: 12 }}>{error}</div>}
 
-      <div style={{ marginBottom: 12, color: "#372554"}}>
+  <div style={{ marginBottom: 12, color: "#ccc"}}>
         <strong>Status:</strong> {status}
         {status === "indexing" && (
           <span>
@@ -612,18 +617,20 @@ return (
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && doSearch(query)}
           placeholder='Enter keywords or exact phrase (use "quotes" for phrase)'
-          style={{
+            style={{
             flex: "1 1 300px",
             padding: "10px 14px",
             minWidth: 300,
             borderRadius: 9999,
-            border: "1px solid #ccc",
+            border: "1px solid #222",
+            background: "#0b0b0b",
+            color: "#fff",
             outline: "none",
             transition: "all 0.2s ease",
-            boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+            boxShadow: "0 1px 3px rgba(255,255,255,0.02)",
           }}
-          onFocus={(e) => (e.target.style.border = "1px solid #888")}
-          onBlur={(e) => (e.target.style.border = "1px solid #ccc")}
+          onFocus={(e) => (e.target.style.border = "1px solid #444")}
+          onBlur={(e) => (e.target.style.border = "1px solid #222")}
         />
         <button
           onClick={() => doSearch(query)}
