@@ -3,6 +3,7 @@ import { MANIFEST_URL, BASE_URL } from "./config";
 import type { Doc, SearchResult } from "./types";
 import Fuse from "fuse.js";
 import AI from "./call_gpt";
+import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
 
 import { initializeApp } from 'firebase/app';
 
@@ -54,10 +55,57 @@ function tokenize(text: string) {
     .filter(Boolean);
 }
 
+function Navbar() {
+  const location = useLocation();
+  const tabs = [
+    { path: "/", label: "Search" },
+    { path: "/explore", label: "Explore" },
+    { path: "/profile", label: "Profile" },
+  ];
+
 const CANDIDATE_THRESHOLD = 600; // if candidate set smaller than this, search only them with Fuse for speed
 const DEFAULT_PAGE_SIZE = 10;
 
-export default function App() {
+return (
+    <nav
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        gap: 24,
+        background: "#111",
+        color: "#fff",
+        padding: "12px 0",
+        position: "sticky",
+        top: 0,
+        zIndex: 100,
+      }}
+    >
+      {tabs.map((tab) => (
+        <Link
+          key={tab.path}
+          to={tab.path}
+          style={{
+            textDecoration: "none",
+            color: location.pathname === tab.path ? "#f39c12" : "#fff",
+            fontWeight: location.pathname === tab.path ? "700" : "400",
+            fontSize: 16,
+            borderBottom:
+              location.pathname === tab.path
+                ? "2px solid #f39c12"
+                : "2px solid transparent",
+            paddingBottom: 4,
+            transition: "all 0.2s ease",
+          }}
+        >
+          {tab.label}
+        </Link>
+      ))}
+    </nav>
+  );
+}
+
+function SearchPage() {
   const [status, setStatus] = useState<"idle" | "indexing" | "ready" | "error">("idle");
   const [progress, setProgress] = useState({ done: 0, total: 0 });
   const docsRef = useRef<Map<string, Doc>>(new Map());
@@ -69,7 +117,8 @@ export default function App() {
 
   // Pagination state
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [activeTab, setActiveTab] = useState("search");
 
   useEffect(() => {
     if (!MANIFEST_URL || !BASE_URL) {
@@ -288,7 +337,7 @@ export default function App() {
     let fuzzyResults: Fuse.FuseResult<Doc>[] = [];
     if (candidateIds.size > 0) {
       const candidateArray = Array.from(candidateIds).map((id) => allDocs.get(id)!) as Doc[];
-      if (candidateArray.length <= CANDIDATE_THRESHOLD) {
+      if (candidateArray.length <= 600) {
         // create a small Fuse on candidates for fastest fuzzy ranking
         const smallFuse = new Fuse(candidateArray, {
           keys: [
@@ -390,7 +439,7 @@ return (
         "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace",
     }}
   >
-    {/* Header + Controls (fixed) */}
+    {/* PAGE CONTENT AREA */}
     <div
       style={{
         textAlign: "center",
@@ -607,7 +656,35 @@ return (
     </div>
   </div>
 );
+}
 
+function ExplorePage() {
+  return (
+    <div style={{ textAlign: "center", marginTop: 40 }}>
+      <h2>Explore</h2>
+      <p>Visualize data and discover relationships across publications.</p>
+    </div>
+  );
+}
 
+function ProfilePage() {
+  return (
+    <div style={{ textAlign: "center", marginTop: 40 }}>
+      <h2>Profile</h2>
+      <p>View your saved searches, bookmarks, and preferences.</p>
+    </div>
+  );
+}
 
+export default function App() {
+  return (
+    <Router>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<SearchPage />} />
+        <Route path="/explore" element={<ExplorePage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+      </Routes>
+    </Router>
+  );
 }
