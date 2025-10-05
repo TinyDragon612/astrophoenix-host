@@ -3,12 +3,22 @@ import { MANIFEST_URL, BASE_URL } from "./config";
 import type { Doc, SearchResult } from "./types";
 import Fuse from "fuse.js";
 import AI from "./call_gpt";
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from "react-router-dom";
 
 import Explore from "./pages/explore";
 import Profile from "./pages/profile";
+import Saved from "./pages/saved";
+import Results from "./pages/results";
+import ArticlePage from "./pages/article";
+import LoginSignup from "./pages/login";
 
 import { initializeApp } from 'firebase/app';
+import { ResultsProvider, useResults } from "./context/ResultsContext";
+import { getAuth, signOut } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
+import { setPersistence, browserLocalPersistence } from "firebase/auth";
+import { Navigate } from "react-router-dom";
+
 
 /**
  * App.tsx - Incremental indexing, faster search, pagination, highlighting.
@@ -59,10 +69,12 @@ function tokenize(text: string) {
 }
 
 function Navbar() {
+
   const location = useLocation();
   const tabs = [
     { path: "/", label: "Search" },
     { path: "/explore", label: "Explore" },
+    { path: "/saved", label: "Saved" },
     { path: "/profile", label: "Profile" },
   ];
 
@@ -76,7 +88,7 @@ return (
         justifyContent: "center",
         alignItems: "center",
         gap: 24,
-        background: "#339388",
+        background: "#baa3ffff",
         color: "#fff",
         padding: "12px 0",
         position: "sticky",
@@ -92,12 +104,12 @@ return (
           to={tab.path}
           style={{
             textDecoration: "none",
-            color: location.pathname === tab.path ? "#A094C7" : "#372554",
+            color: location.pathname === tab.path ? "#ffffffff" : "#372554",
             fontWeight: location.pathname === tab.path ? "700" : "400",
             fontSize: 16,
             borderBottom:
               location.pathname === tab.path
-                ? "2px solid #A094C7"
+                ? "2px solid #8563f6ff"
                 : "2px solid transparent",
             paddingBottom: 4,
             transition: "all 0.2s ease",
@@ -111,6 +123,8 @@ return (
 }
 
 function SearchPage() {
+  const navigate = useNavigate();
+  const { setLastResults } = useResults();
   const [status, setStatus] = useState<"idle" | "indexing" | "ready" | "error">("idle");
   const [progress, setProgress] = useState({ done: 0, total: 0 });
   const docsRef = useRef<Map<string, Doc>>(new Map());
@@ -409,6 +423,18 @@ function SearchPage() {
     // Set results (full array) and reset page
     setResults(hitsArr);
     setPage(1);
+    // save to context so Results page is resilient to refresh
+    try {
+      setLastResults(hitsArr, q, pageSize);
+    } catch (e) {
+      // ignore if context not available
+    }
+    // navigate to results page
+    try {
+      navigate("/results");
+    } catch (e) {
+      // ignore
+    }
   }
 
   // excerpt helper
@@ -459,6 +485,7 @@ return (
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
+      justifyContent: "center",
       height: "100vh",
       background: "#fafafa",
       fontFamily:
@@ -469,12 +496,11 @@ return (
     <div
       style={{
         textAlign: "center",
-        padding: 200,
+        padding: "40px 24px",
         width: "100%",
         maxWidth: 1000,
-        position: "sticky",
-        top: 0,
-        background: "#A094C7",
+        position: "relative",
+        background: "#fff",
         zIndex: 10,
         boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
         borderRadius: 50,
@@ -555,147 +581,50 @@ return (
       </div>
     </div>
 
-    {/* Scrollable Results Area */}
-    <div
-      style={{
-        flex: 1,
-        overflowY: "auto",
-        width: "100%",
-        maxWidth: 1000,
-        padding: "0 20px 40px",
-      }}
-    >
-      {/* Status & Controls */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          margin: "20px 0 10px",
-          flexWrap: "wrap",
-          color: "#666",
-        }}
-      >
-        <div>
-          {results.length} result{results.length !== 1 ? "s" : ""}{" "}
-          {results.length > 0 && (
-            <> — page {page} / {totalPages}</>
-          )}
-        </div>
-
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <label style={{ fontSize: 13, color: "#666" }}>
-            Page size:
-            <select
-              value={pageSize}
-              onChange={(e) => setPageSize(Number(e.target.value))}
-              style={{ marginLeft: 6 }}
-            >
-              {[5, 10, 20, 50].map((n) => (
-                <option key={n} value={n}>
-                  {n}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
-      </div>
-
-      {/* Results List */}
-      <div>
-        {pageResults.length === 0 && (
-          <div style={{ color: "#666" }}>No results on this page.</div>
-        )}
-        {pageResults.map((r) => (
-          <div
-            key={r.id}
-            style={{ padding: 12, borderBottom: "1px solid #eee" }}
-          >
-            <div style={{ fontSize: 16, fontWeight: 600 }}>
-              <span
-                dangerouslySetInnerHTML={{
-                  __html: highlightHtml(r.title, query),
-                }}
-              />
-            </div>
-            <div style={{ fontSize: 12, color: "#666", margin: "6px 0" }}>
-              {r.matches ? `${r.matches} match(es)` : ""}
-            </div>
-            <div style={{ whiteSpace: "pre-wrap", marginTop: 4 }}>
-              <span
-                dangerouslySetInnerHTML={{
-                  __html: highlightHtml(r.excerpt, query),
-                }}
-              />
-            </div>
-            <div
-              style={{ marginTop: 6, fontSize: 12, color: "#999" }}
-            >
-              score: {r.score}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Pagination (centered) */}
-      <div
-        style={{
-          display: "flex",
-          gap: 8,
-          justifyContent: "center",
-          marginTop: 16,
-          flexWrap: "wrap",
-        }}
-      >
-        <button onClick={() => setPage(1)} disabled={page === 1}>
-          « First
-        </button>
-        <button
-          onClick={() => setPage((p) => Math.max(1, p - 1))}
-          disabled={page === 1}
-        >
-          ‹ Prev
-        </button>
-        <div
-          style={{
-            padding: "6px 10px",
-            border: "1px solid #eee",
-            borderRadius: 6,
-            minWidth: 120,
-            textAlign: "center",
-          }}
-        >
-          Page {page} of {totalPages}
-        </div>
-        <button
-          onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-          disabled={page === totalPages}
-        >
-          Next ›
-        </button>
-        <button
-          onClick={() => setPage(totalPages)}
-          disabled={page === totalPages}
-        >
-          Last »
-        </button>
-      </div>
-    </div>
+    
   </div>
 );
 }
 
 //PAGES!!!!!
 
+
 export default function App() {
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false); // stop showing loading spinner
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+
   return (
-        <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<SearchPage />} />
-        <Route path="/explore" element={<Explore/>} />
-        <Route path="/profile" element={<Profile />} />
-      </Routes>
-    </Router>
+    <div>
+      {user ? <MainApp /> : <LoginSignup />}
+    </div>
   );
-}
+
+  function MainApp() {
+  return (
+    <ResultsProvider>
+      <Router>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<SearchPage />} />
+          <Route path="/explore" element={<Explore/>} />
+          <Route path="/results" element={<Results/>} />
+          <Route path="/saved" element={<Saved/>} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/article/:id" element={<ArticlePage />} />
+        </Routes>
+      </Router>
+    </ResultsProvider>
+  );
+}}
