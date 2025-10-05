@@ -397,9 +397,9 @@ return (
       }}
     >
       {/* Header and search controls centered */}
-      <div style={{ textAlign: "center", marginBottom: 24 }}>
+      <div style={{ textAlign: "center", marginBottom: 24, color: "#372554"}}>
         <h1>astrophoenix</h1>
-        <p style={{ color: "#444" }}>
+        <p style={{ color: "#372554" }}>
           Search keywords and research questions across all 608 papers.
         </p>
 
