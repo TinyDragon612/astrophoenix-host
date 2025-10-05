@@ -10,9 +10,15 @@ import Profile from "./pages/profile";
 import Saved from "./pages/saved";
 import Results from "./pages/results";
 import ArticlePage from "./pages/article";
+import LoginSignup from "./pages/login";
 
 import { initializeApp } from 'firebase/app';
 import { ResultsProvider, useResults } from "./context/ResultsContext";
+import { getAuth, signOut } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
+import { setPersistence, browserLocalPersistence } from "firebase/auth";
+import { Navigate } from "react-router-dom";
+
 
 /**
  * App.tsx - Incremental indexing, faster search, pagination, highlighting.
@@ -63,6 +69,7 @@ function tokenize(text: string) {
 }
 
 function Navbar() {
+
   const location = useLocation();
   const tabs = [
     { path: "/", label: "Search" },
@@ -457,6 +464,7 @@ return (
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
+      justifyContent: "center",
       height: "100vh",
       background: "#fafafa",
       fontFamily:
@@ -467,12 +475,11 @@ return (
     <div
       style={{
         textAlign: "center",
-        padding: 200,
+        padding: "40px 24px",
         width: "100%",
         maxWidth: 1000,
-        position: "sticky",
-        top: 0,
-        background: "#ffffffff",
+        position: "relative",
+        background: "#fff",
         zIndex: 10,
         boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
         borderRadius: 50,
@@ -553,17 +560,37 @@ return (
       </div>
     </div>
 
-    {/* Results are shown on the separate Results page after search completes. */}
-    <div style={{ padding: 40, textAlign: "center", color: "#666" }}>
-      <em>Search results will open on the Results page automatically after you run a search.</em>
-    </div>
+    
   </div>
 );
 }
 
 //PAGES!!!!!
 
+
 export default function App() {
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false); // stop showing loading spinner
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+
+  return (
+    <div>
+      {user ? <MainApp /> : <LoginSignup />}
+    </div>
+  );
+
+  function MainApp() {
   return (
     <ResultsProvider>
       <Router>
@@ -579,4 +606,4 @@ export default function App() {
       </Router>
     </ResultsProvider>
   );
-}
+}}
