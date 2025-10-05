@@ -112,8 +112,11 @@ return (
           marginLeft: "auto",
           background: "none",
           border: "none",
-          color: "white",
+          color: "#fde8ff",
           cursor: "pointer",
+          fontSize: 16,
+          fontFamily:
+          "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace",
         }}
       >
         Logout
@@ -447,20 +450,18 @@ function SearchPage() {
       if (b.matches !== a.matches) return b.matches - a.matches;
       return a.title.localeCompare(b.title);
     });
-    const encoded = encodeURIComponent(hitsArr[0].title);
-    let info = await fetch(BASE_URL + encoded + ".txt");
-    console.log (info);
+
+    console.log(docsRef.current.get(hitsArr[0].id)?.content);
 
     let aiBabble = "The user asked: " + q + "\n I am now going to give you the contents of several academic papers that are relevant to this topic. Use ONLY KNOWLEDGE FROM THE FOLLOWING PAPERS to answer the user's question. Every piece of information you get from the papers MUST BE CITED with the title of cited paper in parentheses at the end of the relevant sentences. Thank you very much. BEGIN PAPERS: "
     
     let count = 0;
-    while (count < 5 && count < hitsArr.length) {
+    while (count < 3 && count < hitsArr.length) {
         console.log ("On paper " + count);
-        const encoded = encodeURIComponent(hitsArr[count].title);
-        let info = await fetch(BASE_URL + encoded + ".txt");
-        aiBabble = aiBabble + "PAPER TITLE: " + hitsArr[count].title + " PAPER CONTENT: " + info + "END PAPER CONTENT. ", 
+        aiBabble = aiBabble + "PAPER TITLE: " + hitsArr[count].title + " PAPER CONTENT: " + await AIU("", "Please summarize the key statistics and points in this paper for another AI to be able to quickly read and get as much infomration out of this as possible: " + docsRef.current.get(hitsArr[count].id)?.content) + "END PAPER CONTENT. ", 
         count++;
     }
+    console.log(aiBabble);
 
    
     const hitsMap2 = new Map<string, SearchResult>();
@@ -468,7 +469,7 @@ function SearchPage() {
         hitsMap2.set("1", {
           id: "AI",
           title: "AI Summary",
-          excerpt: AIU("You are a concise, factual assistant. Your job is to summarize and help people learn about papers on Space Biology.", aiBabble) + "\n Papers Cited: " + hitsArr[0].title,
+          excerpt: await AIU("You are a concise, factual assistant. Your job is to summarize and help people learn about papers on Space Biology.", aiBabble) + "\n Papers Cited: " + hitsArr[0].title,
           score: 0,
           matches: 1,
           content: ""

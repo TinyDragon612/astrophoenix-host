@@ -9,7 +9,7 @@ export default async function askGPT(sys: string, use: string) : Promise<string>
   try {
 
     const response = await client.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4.1-nano",
       messages: [
         { role: "system", content: sys },
         { role: "user", content: use },
