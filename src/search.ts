@@ -44,7 +44,8 @@ export async function buildIndex(manifestUrl: string, baseUrl: string, opts?: {
       docs.push({
         id: filename,
         title: filename.replace(/\.txt$/i, ''),
-        content
+        content,
+        url: "",
       })
       done++
       onProgress?.(done, total)
@@ -97,6 +98,7 @@ export async function buildIndex(manifestUrl: string, baseUrl: string, opts?: {
           score,
           matches,
           content: d.content,
+          url: d.url,
         })
         continue
       }
@@ -111,7 +113,8 @@ export async function buildIndex(manifestUrl: string, baseUrl: string, opts?: {
           excerpt: excerptFor(d.content, idx),
           score,
           matches,
-          content: d.content
+          content: d.content,
+          url: d.url,
         })
         continue
       }
@@ -133,7 +136,8 @@ export async function buildIndex(manifestUrl: string, baseUrl: string, opts?: {
         excerpt,
         score,
         matches: 0,
-        content: d.content
+        content: d.content,
+        url: d.url,
       })
     }
 
