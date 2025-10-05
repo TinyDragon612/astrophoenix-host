@@ -8,7 +8,7 @@ const client = new OpenAI({
 async function askGPT(prompt: string) {
   try {
     const response = await client.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4",
       messages: [
         { role: "system", content: "You are a concise, factual assistant. Your job is to summarize and help people learn about papers on Space Biology." },
         { role: "user", content: "This is the user's question: " + prompt },

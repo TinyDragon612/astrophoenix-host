@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "dotenv": "^17.2.3",
     "firebase": "^12.3.0",
     "fuse.js": "^6.6.2",
     "openai": "^6.1.0",
