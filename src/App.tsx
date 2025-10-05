@@ -183,6 +183,7 @@ function SearchPage() {
               const encoded = encodeURIComponent(filename);
               let r = await fetch(BASE_URL + encoded);
               if (!r.ok) {
+                console.log("fallback")
                 r = await fetch(BASE_URL + filename);
                 if (!r.ok) {
                   console.warn("Failed to fetch", filename, r.status);
@@ -326,15 +327,7 @@ function SearchPage() {
     const inverted = invertedRef.current;
     const fuse = fuseRef.current;
 
-    const hitsMap2 = new Map<string, SearchResult>();
-
-        hitsMap2.set("1", {
-          id: "AI",
-          title: "AI Summary",
-          excerpt: await AI(q, "question"),
-          score: 0,
-          matches: 1,
-        });
+    
    const hitsMap = new Map<string, SearchResult>();
     // 1) exact phrase in title
     for (const [id, d] of allDocs) {
@@ -346,6 +339,7 @@ function SearchPage() {
           excerpt: d.title,
           score: 0,
           matches: (titleLower.match(new RegExp(escapeRegex(phrase), "g")) || []).length,
+          content: d.content,
         });
       }
     }
@@ -362,6 +356,7 @@ function SearchPage() {
           excerpt: makeExcerpt(d.content, idx, phrase.length),
           score: 10,
           matches: (contentLower.match(new RegExp(escapeRegex(phrase), "g")) || []).length,
+          content: d.content,
         });
       }
     }
@@ -433,21 +428,40 @@ function SearchPage() {
         excerpt,
         score,
         matches: 0,
+        content: d.content,
       });
     }
 
+    
+
+
     // Convert to array and sort: score asc, matches desc, title
     let hitsArr = Array.from(hitsMap.values());
-    if (q.includes("?")) {
-       hitsArr = Array.from(hitsMap2.values());
-    }
+    
     //const hitsArr = Array.from(hitsMap.values());
     hitsArr.sort((a, b) => {
       if (a.score !== b.score) return a.score - b.score;
       if (b.matches !== a.matches) return b.matches - a.matches;
       return a.title.localeCompare(b.title);
     });
+    const encoded = encodeURIComponent(hitsArr[0].title);
+    let info = await fetch(BASE_URL + encoded + "..txt");
+    console.log (info);
+   
+    const hitsMap2 = new Map<string, SearchResult>();
 
+        hitsMap2.set("1", {
+          id: "AI",
+          title: "AI Summary",
+          excerpt: await AI(q + "Info you can use to help, talk about how you used this info to help: " + info, "question") + "\n Papers Cited: " + hitsArr[0].title,
+          score: 0,
+          matches: 1,
+          content: ""
+        });
+
+    if (q.includes("?")) {
+       hitsArr = Array.from(hitsMap2.values());
+    }
     // Set results (full array) and reset page
     setResults(hitsArr);
     setPage(1);

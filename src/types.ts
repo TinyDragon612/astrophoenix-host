@@ -10,4 +10,5 @@ export type SearchResult = {
   excerpt: string
   score: number
   matches: number
+  content: string
 }
