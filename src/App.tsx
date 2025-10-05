@@ -114,6 +114,9 @@ return (
           border: "none",
           color: "white",
           cursor: "pointer",
+          fontSize: 16,
+          fontFamily:
+          "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace",
         }}
       >
         Logout
