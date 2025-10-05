@@ -1,10 +1,15 @@
 // src/pages/article.tsx
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { BASE_URL } from "../config";
+import { BASE_URL, BASE_URL_URLS } from "../config";
 import askGPT from "../call_gpt";
 
-type DocData = { id: string; title: string; text: string, sourceUrl: string };
+type DocData = {
+  id: string;
+  title: string;
+  text: string;
+  sourceUrl: string;
+};
 
 function chunkText(text: string, target = 12000): string[] {
   const out: string[] = [];
@@ -47,12 +52,26 @@ function titleFromFirstLine(raw: string, fallback: string): string {
     .trim();
 }
 
+function firstUrl(raw: string): string {
+  const line = (raw.split(/\r?\n/).find((l) => l.trim().length > 0) || "").trim();
+  if (!line) return "";
+  if (/^https?:\/\//i.test(line)) return line;
+  if (/^[\w.-]+\.[a-z]{2,}([\/?#].*)?$/i.test(line)) return "https://" + line;
+  return "";
+}
+
+async function fetchText(base: string, filename: string): Promise<{ text: string; url: string }> {
+  let res = await fetch(base + encodeURIComponent(filename));
+  if (!res.ok) res = await fetch(base + filename);
+  if (!res.ok) throw new Error(`Fetch failed (${res.status}) for ${filename}`);
+  return { text: await res.text(), url: res.url };
+}
+
 export default function ArticlePage() {
   const { id = "" } = useParams();
   const [doc, setDoc] = useState<DocData | null>(null);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
-  const title = id
 
   const [summarizing, setSummarizing] = useState(false);
   const [summary, setSummary] = useState<string>("");
@@ -62,20 +81,23 @@ export default function ArticlePage() {
       try {
         setLoading(true);
         setErr(null);
+        setSummary("");
 
-        const baseId = decodeURIComponent(rawId);
+        const baseId = decodeURIComponent(rawId);               // you index without extensions
         const filename = /\.[a-z0-9]+$/i.test(baseId) ? baseId : `${baseId}.txt`;
 
-        // Try encoded path; fall back to raw.
-        let res = await fetch(BASE_URL + encodeURIComponent(filename));
-        if (!res.ok) res = await fetch(BASE_URL + filename);
-        if (!res.ok) throw new Error(`Fetch failed (${res.status})`);
+        // Fetch text and URL-file in parallel
+        const [paper, urlFile] = await Promise.all([
+          fetchText(BASE_URL, filename),
+          BASE_URL_URLS
+            ? fetchText(BASE_URL_URLS, filename).catch(() => ({ text: "", url: "" }))
+            : Promise.resolve({ text: "", url: "" }),
+        ]);
 
-        const text = await res.text();
-        const sourceUrl = res.url;
-        const title = titleFromFirstLine(text, baseId);
+        const title = titleFromFirstLine(paper.text, baseId);
+        const canonicalUrl = firstUrl(urlFile.text) || paper.url; // prefer explicit URL, else fallback
 
-        setDoc({ id: baseId, title, text, sourceUrl });
+        setDoc({ id: baseId, title, text: paper.text, sourceUrl: canonicalUrl });
         document.title = `${title} — AstroPhoenix`;
       } catch (e: any) {
         setErr(e?.message ?? "Unknown error");
@@ -84,7 +106,6 @@ export default function ArticlePage() {
       }
     }
 
-    setSummary("");
     if (!id) {
       setErr("Missing article id.");
       setLoading(false);
