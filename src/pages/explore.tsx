@@ -88,7 +88,7 @@ export default function ExplorePage() {
   }, [files, filter, metaMap]);
 
   return (
-    <div style={{ padding: 20, maxWidth: 1000, margin: "0 auto" }}>
+    <div style={{ padding: 20, maxWidth: 1000, margin: "0 auto", fontFamily: "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
         <h2 style={{ margin: 0 }}>Explore</h2>
         <input
@@ -105,25 +105,28 @@ export default function ExplorePage() {
       {files && (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 12 }}>
           {items.map((it) => (
-            <div key={it.file} style={{ padding: 12, borderRadius: 10, background: "#fff", border: "1px solid #f0f0f0", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
-              <Link to={`/article/${encodeURIComponent(it.file.replace(/\.txt$/i, ""))}`} style={{ textDecoration: "none", color: "#372554", fontWeight: 700 }}>
-                {it.title}
-              </Link>
-              <div style={{ marginTop: 8, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <div style={{ fontSize: 12, color: "#666" }}>
-                  {it.meta && (it.meta.authors || it.meta.year) ? (
-                    <>
-                      {it.meta.authors ? <span>{it.meta.authors}</span> : null}
-                      {it.meta.authors && it.meta.year ? <span> — </span> : null}
-                      {it.meta.year ? <span>{it.meta.year}</span> : null}
-                    </>
-                  ) : (
-                    <span>{it.file}</span>
-                  )}
+            <Link
+              key={it.file}
+              to={`/article/${encodeURIComponent(it.file.replace(/\.txt$/i, ""))}`}
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <div style={{ padding: 12, borderRadius: 10, background: "#fff", border: "1px solid #f0f0f0", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", cursor: "pointer" }}>
+                <div style={{ fontWeight: 700, color: "#372554" }}>{it.title}</div>
+                <div style={{ marginTop: 8, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div style={{ fontSize: 12, color: "#666" }}>
+                    {it.meta && (it.meta.authors || it.meta.year) ? (
+                      <>
+                        {it.meta.authors ? <span>{it.meta.authors}</span> : null}
+                        {it.meta.authors && it.meta.year ? <span> — </span> : null}
+                        {it.meta.year ? <span>{it.meta.year}</span> : null}
+                      </>
+                    ) : (
+                      <span>{it.file}</span>
+                    )}
+                  </div>
                 </div>
-                <Link to={`/article/${encodeURIComponent(it.file.replace(/\.txt$/i, ""))}`} style={{ textDecoration: "none", color: "#8563f6", fontWeight: 600 }}>Open</Link>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       )}
