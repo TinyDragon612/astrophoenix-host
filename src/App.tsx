@@ -268,6 +268,25 @@ function SearchPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // run a search when navigated back from Results with a query in state
+  useEffect(() => {
+    try {
+      // attempt to read state from the history API via location
+      // note: react-router forwards the state as location.state when navigating
+      // here we access window.history.state as a fallback
+      const navState: any = (window.history.state && window.history.state.state) || (window as any).__LOCATION_STATE || null;
+      const q = navState?.query;
+      if (q && typeof q === "string") {
+        // small timeout to ensure indexing has started
+        setTimeout(() => doSearch(q), 50);
+      }
+    } catch (e) {
+      // ignore
+    }
+    // only run once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Reset page when results change
   useEffect(() => {
     setPage(1);

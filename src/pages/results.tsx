@@ -61,10 +61,13 @@ export default function ResultsPage() {
   const state = (loc.state || {}) as { results?: SearchResult[]; query?: string; pageSize?: number };
   const initialResults = state.results ?? lastResults ?? [];
   const initialQuery = state.query ?? ctxQuery ?? "";
-  const [query] = useState(initialQuery);
+  const [query, setQuery] = useState(initialQuery);
   const [results] = useState<SearchResult[]>(initialResults);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState<number>(state.pageSize ?? ctxPageSize ?? 10);
+
+  // local editable query for the top search bar
+  const [queryInput, setQueryInput] = useState<string>(initialQuery);
 
   const totalPages = Math.max(1, Math.ceil(results.length / pageSize));
   const pageResults = useMemo(() => results.slice((page - 1) * pageSize, page * pageSize), [results, page, pageSize]);
@@ -86,7 +89,23 @@ export default function ResultsPage() {
         </div>
       </div>
 
-      <div style={{ marginBottom: 12, color: "#666" }}>{results.length} result{results.length !== 1 ? "s" : ""} {query ? <>for "{query}"</> : null}</div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+        <div style={{ color: "#666" }}>{results.length} result{results.length !== 1 ? "s" : ""} {query ? <>for "{query}"</> : null}</div>
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <input
+            value={queryInput}
+            onChange={(e) => setQueryInput(e.target.value)}
+            placeholder="Edit query"
+            style={{ padding: "6px 8px", borderRadius: 6, border: "1px solid #ccc" }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                navigate("/", { state: { query: queryInput } });
+              }
+            }}
+          />
+          <button onClick={() => navigate("/", { state: { query: queryInput } })}>Search</button>
+        </div>
+      </div>
 
       <div>
         {pageResults.length === 0 && <div style={{ color: "#666" }}>No results on this page.</div>}
