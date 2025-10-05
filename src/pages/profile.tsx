@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { onAuthStateChanged, User, getAuth, signOut } from "firebase/auth";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { auth, db } from "../firebase";
 import { useNavigate } from "react-router-dom";
 
@@ -60,32 +60,35 @@ const Profile: React.FC = () => {
   }, []);
 
   const handleSave = async () => {
-    if (!auth.currentUser) return alert("No user logged in");
+  if (!auth.currentUser) return alert("No user logged in");
 
+  try {
     const userRef = doc(db, "users", auth.currentUser.uid);
-        await updateDoc(userRef, {
+
+    // ✅ Use setDoc with merge: true to create or update the document
+    await setDoc(
+      userRef,
+      {
         displayName: newDisplayName,
         bio: newBio,
-    });
+      },
+      { merge: true }
+    );
 
-    try {
-      const userRef = doc(db, "users", auth.currentUser.uid);
-      await updateDoc(userRef, {
-        displayName: newDisplayName,
-        bio: newBio,
-      });
+    // Update local state
+    setUser((prev) =>
+      prev
+        ? { ...prev, displayName: newDisplayName, bio: newBio }
+        : { displayName: newDisplayName, email: auth.currentUser?.email || "", bio: newBio }
+    );
 
-      // Update local state
-      setUser((prev) =>
-        prev ? { ...prev, displayName: newDisplayName, bio: newBio } : { displayName: newDisplayName, email: auth.currentUser?.email || "", bio: newBio }
-      );
-      setEditing(false);
-      alert("Profile updated!");
-    } catch (err) {
-      console.error("Error updating profile:", err);
-      alert("Failed to update profile.");
-    }
-  };
+    setEditing(false);
+    alert("Profile updated!");
+  } catch (err: any) {
+    console.error("Error updating profile:", err);
+    alert(`Failed to update profile: ${err.message}`);
+  }
+};
 
   if (loading) return <div>Loading profile...</div>;
   if (!user) return <div>No user is signed in.</div>;
