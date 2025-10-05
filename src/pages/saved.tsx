@@ -8,9 +8,10 @@ export default function SavedPage() {
 
   if (!saved || saved.length === 0) {
     return (
-      <div style={{ textAlign: "center", marginTop: 40, color: "#fff" }}>
+      <div style={{ textAlign: "center", marginTop: 40, color: "#fff", fontFamily:
+        "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace" }}>
         <h2>Saved</h2>
-        <p>No saved articles yet.</p>
+        <p>No saved articles yet. What will you explore? 🤔💭</p>
         <Link
           to="/"
           style={{

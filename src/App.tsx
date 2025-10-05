@@ -108,25 +108,6 @@ return (
       }}
     >
 
-      <nav>
-      {/* ... your tab links ... */}
-      <button
-        onClick={() => signOut(auth)}
-        style={{
-          marginLeft: "auto",
-          background: "none",
-          border: "none",
-          color: "#fde8ff",
-          cursor: "pointer",
-          fontSize: 16,
-          fontFamily:
-          "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace",
-        }}
-      >
-        Logout
-      </button>
-    </nav>
-
       <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
         {tabs.map((tab) => (
           <Link
