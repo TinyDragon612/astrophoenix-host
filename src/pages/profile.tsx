@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { onAuthStateChanged, User } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
-
-import { getAuth, signOut } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { onAuthStateChanged, User, getAuth, signOut } from "firebase/auth";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { auth, db } from "../firebase";
 import { useNavigate } from "react-router-dom";
 
@@ -21,6 +18,7 @@ const Profile: React.FC = () => {
   const [newDisplayName, setNewDisplayName] = useState("");
   const [newBio, setNewBio] = useState("");
 
+  // Load user profile
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser: User | null) => {
       if (!currentUser) {
@@ -42,15 +40,13 @@ const Profile: React.FC = () => {
           setNewDisplayName(data.displayName || currentUser.displayName || "");
           setNewBio(data.bio || "");
         } else {
-          // fallback to auth data if Firestore doc not found
-          const fallbackUser = {
+          setUser({
             displayName: currentUser.displayName || "Unnamed User",
             email: currentUser.email || "",
             bio: "",
             photoURL: currentUser.photoURL || "",
-          };
-          setUser(fallbackUser);
-          setNewDisplayName(fallbackUser.displayName);
+          });
+          setNewDisplayName(currentUser.displayName || "");
           setNewBio("");
         }
       } catch (err) {
@@ -66,6 +62,12 @@ const Profile: React.FC = () => {
   const handleSave = async () => {
     if (!auth.currentUser) return alert("No user logged in");
 
+    const userRef = doc(db, "users", auth.currentUser.uid);
+        await updateDoc(userRef, {
+        displayName: newDisplayName,
+        bio: newBio,
+    });
+
     try {
       const userRef = doc(db, "users", auth.currentUser.uid);
       await updateDoc(userRef, {
@@ -75,9 +77,7 @@ const Profile: React.FC = () => {
 
       // Update local state
       setUser((prev) =>
-        prev
-          ? { ...prev, displayName: newDisplayName, bio: newBio }
-          : { displayName: newDisplayName, email: auth.currentUser?.email || "", bio: newBio }
+        prev ? { ...prev, displayName: newDisplayName, bio: newBio } : { displayName: newDisplayName, email: auth.currentUser?.email || "", bio: newBio }
       );
       setEditing(false);
       alert("Profile updated!");
@@ -90,7 +90,7 @@ const Profile: React.FC = () => {
   if (loading) return <div>Loading profile...</div>;
   if (!user) return <div>No user is signed in.</div>;
 
-   return (
+  return (
     <div
       style={{
         maxWidth: 450,
@@ -108,40 +108,94 @@ const Profile: React.FC = () => {
           style={{ width: 100, height: 100, borderRadius: "50%", objectFit: "cover", marginBottom: 16 }}
         />
       )}
-      <h2>{user.displayName || "Unnamed User"}</h2>
-      <p>
-        <strong>Email:</strong> {user.email}
-      </p>
-      {user.bio && (
-        <p>
-          <strong>Bio:</strong> {user.bio}
-        </p>
+
+      {!editing ? (
+        <>
+          <h2>{user.displayName || "Unnamed User"}</h2>
+          <p>
+            <strong>Email:</strong> {user.email}
+          </p>
+          {user.bio && (
+            <p>
+              <strong>Bio:</strong> {user.bio}
+            </p>
+          )}
+          <div style={{ marginTop: 16 }}>
+            <button
+              onClick={() => setEditing(true)}
+              style={{
+                background: "#007bff",
+                color: "white",
+                border: "none",
+                padding: "8px 12px",
+                borderRadius: 6,
+                cursor: "pointer",
+                marginRight: 8,
+              }}
+            >
+              Edit Profile
+            </button>
+            <button
+              onClick={async () => {
+                try {
+                  await signOut(auth);
+                  window.location.href = "/";
+                } catch (err) {
+                  console.error("Error signing out:", err);
+                }
+              }}
+              style={{
+                background: "#e53935",
+                color: "white",
+                border: "none",
+                padding: "8px 12px",
+                borderRadius: 6,
+                cursor: "pointer",
+              }}
+            >
+              Logout
+            </button>
+          </div>
+        </>
+      ) : (
+        <>
+          <h2>Edit Profile</h2>
+          <div style={{ marginBottom: 12 }}>
+            <label>
+              <strong>Display Name</strong>
+            </label>
+            <input
+              type="text"
+              value={newDisplayName}
+              onChange={(e) => setNewDisplayName(e.target.value)}
+              style={{ width: "100%", padding: 8, borderRadius: 6, border: "1px solid #ccc", marginTop: 4 }}
+            />
+          </div>
+          <div style={{ marginBottom: 12 }}>
+            <label>
+              <strong>Bio</strong>
+            </label>
+            <textarea
+              value={newBio}
+              onChange={(e) => setNewBio(e.target.value)}
+              rows={4}
+              style={{ width: "100%", padding: 8, borderRadius: 6, border: "1px solid #ccc", marginTop: 4, resize: "none" }}
+            />
+          </div>
+          <button
+            onClick={handleSave}
+            style={{ padding: "8px 16px", borderRadius: 8, border: "none", background: "green", color: "white", cursor: "pointer", marginRight: 8 }}
+          >
+            Save
+          </button>
+          <button
+            onClick={() => setEditing(false)}
+            style={{ padding: "8px 16px", borderRadius: 8, border: "1px solid #ccc", background: "#f8f8f8", cursor: "pointer" }}
+          >
+            Cancel
+          </button>
+        </>
       )}
-      <div style={{ marginTop: 16 }}>
-        <button
-          onClick={async () => {
-            const auth = getAuth();
-            try {
-              await signOut(auth);
-              // navigate back to root/login
-              // using window.location to force app to re-evaluate auth state is also acceptable, but we'll navigate
-              window.location.href = "/";
-            } catch (err) {
-              console.error("Error signing out:", err);
-            }
-          }}
-          style={{
-            background: "#e53935",
-            color: "white",
-            border: "none",
-            padding: "8px 12px",
-            borderRadius: 6,
-            cursor: "pointer",
-          }}
-        >
-          Logout
-        </button>
-      </div>
     </div>
   );
 };
