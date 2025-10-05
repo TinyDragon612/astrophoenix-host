@@ -469,7 +469,7 @@ function SearchPage() {
         hitsMap2.set("1", {
           id: "AI",
           title: "AI Summary",
-          excerpt: AIU("You are a concise, factual assistant. Your job is to summarize and help people learn about papers on Space Biology.", aiBabble) + "\n Papers Cited: " + hitsArr[0].title,
+          excerpt: await AIU("You are a concise, factual assistant. Your job is to summarize and help people learn about papers on Space Biology.", aiBabble) + "\n Papers Cited: " + hitsArr[0].title,
           score: 0,
           matches: 1,
           content: ""
