@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import type { SearchResult } from "../types";
 import { useResults } from "../context/ResultsContext";
 
@@ -110,19 +110,25 @@ export default function ResultsPage() {
       <div>
         {pageResults.length === 0 && <div style={{ color: "#666" }}>No results on this page.</div>}
         {pageResults.map((r) => (
-          <div key={r.id} style={{ padding: 12, borderBottom: "1px solid #eee" }}>
-            <div style={{ fontSize: 16, fontWeight: 600 }}>
-              <span dangerouslySetInnerHTML={{ __html: highlightHtml(r.title, query) }} />
+          <Link 
+            key={r.id}
+            to={`/article/${encodeURIComponent(r.id)}`}
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <div key={r.id} style={{ padding: 12, borderBottom: "1px solid #eee" }}>
+              <div style={{ fontSize: 16, fontWeight: 600 }}>
+                <span dangerouslySetInnerHTML={{ __html: highlightHtml(r.title, query) }} />
+              </div>
+              <div style={{ position: "absolute", right: 12, top: 12 }}>
+                <button onClick={() => toggleSaved(r)}>{saved.find((s) => s.id === r.id) ? "Unsave" : "Save"}</button>
+              </div>
+              <div style={{ fontSize: 12, color: "#666", margin: "6px 0" }}>{r.matches ? `${r.matches} match(es)` : ""}</div>
+              <div style={{ whiteSpace: "pre-wrap", marginTop: 4 }}>
+                <span dangerouslySetInnerHTML={{ __html: highlightHtml(r.excerpt, query) }} />
+              </div>
+              <div style={{ marginTop: 6, fontSize: 12, color: "#999" }}>score: {r.score}</div>
             </div>
-            <div style={{ position: "absolute", right: 12, top: 12 }}>
-              <button onClick={() => toggleSaved(r)}>{saved.find((s) => s.id === r.id) ? "Unsave" : "Save"}</button>
-            </div>
-            <div style={{ fontSize: 12, color: "#666", margin: "6px 0" }}>{r.matches ? `${r.matches} match(es)` : ""}</div>
-            <div style={{ whiteSpace: "pre-wrap", marginTop: 4 }}>
-              <span dangerouslySetInnerHTML={{ __html: highlightHtml(r.excerpt, query) }} />
-            </div>
-            <div style={{ marginTop: 6, fontSize: 12, color: "#999" }}>score: {r.score}</div>
-          </div>
+          </Link>
         ))}
       </div>
 

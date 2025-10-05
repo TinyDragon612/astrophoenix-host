@@ -293,28 +293,25 @@ function SearchPage() {
 
   // search function using hybrid approach
   async function doSearch(q: string) {
-   const result = AI(query, "classify");
-   const summary : SearchResult[] = [];
-    /*summary.push({
-        id: "0",
-                title: "AI Summary",
-                excerpt: await AI(query, "question"),
-                score: 0,
-                matches: 0
-    });
-    if (await result == "question") {
+   /* q = q.trim()
+   const result = AI(q, "classify");
+   console.log(await result)
+    if (await result !== "question") {
+        console.log(result)
         const summary : SearchResult[] = [];
         summary.push({
-        id: "0",
+                id: "0",
                 title: "AI Summary",
-                excerpt: await AI(query, "question"),
+                excerpt: await AI(q, "question"),
                 score: 0,
                 matches: 0
       });
+        setQuery(q);
         setResults(summary);
+        setPage(1);
+        navigate("/results");
         return;
     } */
-  
     q = q.trim();
     setQuery(q);
     setResults([]);
@@ -328,8 +325,16 @@ function SearchPage() {
     const inverted = invertedRef.current;
     const fuse = fuseRef.current;
 
-    const hitsMap = new Map<string, SearchResult>();
+    const hitsMap2 = new Map<string, SearchResult>();
 
+        hitsMap2.set("1", {
+          id: "AI",
+          title: "AI Summary",
+          excerpt: await AI(q, "question"),
+          score: 0,
+          matches: 1,
+        });
+   const hitsMap = new Map<string, SearchResult>();
     // 1) exact phrase in title
     for (const [id, d] of allDocs) {
       const titleLower = d.title.toLowerCase();
@@ -431,7 +436,11 @@ function SearchPage() {
     }
 
     // Convert to array and sort: score asc, matches desc, title
-    const hitsArr = Array.from(hitsMap.values());
+    let hitsArr = Array.from(hitsMap.values());
+    if (q.includes("?")) {
+       hitsArr = Array.from(hitsMap2.values());
+    }
+    //const hitsArr = Array.from(hitsMap.values());
     hitsArr.sort((a, b) => {
       if (a.score !== b.score) return a.score - b.score;
       if (b.matches !== a.matches) return b.matches - a.matches;
