@@ -1,8 +1,8 @@
 import OpenAI from "openai";
-import "dotenv/config";
+import "dotenv";
 
 const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: import.meta.env.VITE_OPENAI_API_KEY, dangerouslyAllowBrowser: true,
 });
 
 export default async function askGPT(prompt: string, call_type: string) : Promise<string> {
@@ -41,8 +41,8 @@ export default async function askGPT(prompt: string, call_type: string) : Promis
 }
 
 // Run when called directly from CLI
-if (process.argv[2]) {
+/*if (process.argv[2]) {
   askGPT(process.argv.slice(2).join(" "), "");
 } else {
   console.log("Usage: tsx call_gpt.ts 'your question here'");
-}
+}*/
