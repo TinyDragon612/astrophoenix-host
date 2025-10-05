@@ -17,11 +17,11 @@ interface UserProfile {
 const Profile: React.FC = () => {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState(false);
+  const [newDisplayName, setNewDisplayName] = useState("");
+  const [newBio, setNewBio] = useState("");
 
   useEffect(() => {
-    const auth = getAuth();
-    const db = getFirestore();
-
     const unsubscribe = onAuthStateChanged(auth, async (currentUser: User | null) => {
       if (!currentUser) {
         setUser(null);
@@ -34,17 +34,24 @@ const Profile: React.FC = () => {
         if (userDoc.exists()) {
           const data = userDoc.data();
           setUser({
-            displayName: data.displayName || currentUser.displayName || "",
+            displayName: data.displayName || currentUser.displayName || "Unnamed User",
             email: data.email || currentUser.email || "",
-            photoURL: data.photoURL || currentUser.photoURL || "",
             bio: data.bio || "",
+            photoURL: data.photoURL || currentUser.photoURL || "",
           });
+          setNewDisplayName(data.displayName || currentUser.displayName || "");
+          setNewBio(data.bio || "");
         } else {
-          setUser({
-            displayName: currentUser.displayName || "",
+          // fallback to auth data if Firestore doc not found
+          const fallbackUser = {
+            displayName: currentUser.displayName || "Unnamed User",
             email: currentUser.email || "",
+            bio: "",
             photoURL: currentUser.photoURL || "",
-          });
+          };
+          setUser(fallbackUser);
+          setNewDisplayName(fallbackUser.displayName);
+          setNewBio("");
         }
       } catch (err) {
         console.error("Error loading user data:", err);
@@ -56,23 +63,49 @@ const Profile: React.FC = () => {
     return () => unsubscribe();
   }, []);
 
-  if (loading) return <div>Loading profile...</div>;
+  const handleSave = async () => {
+    if (!auth.currentUser) return alert("No user logged in");
 
+    try {
+      const userRef = doc(db, "users", auth.currentUser.uid);
+      await updateDoc(userRef, {
+        displayName: newDisplayName,
+        bio: newBio,
+      });
+
+      // Update local state
+      setUser((prev) =>
+        prev
+          ? { ...prev, displayName: newDisplayName, bio: newBio }
+          : { displayName: newDisplayName, email: auth.currentUser?.email || "", bio: newBio }
+      );
+      setEditing(false);
+      alert("Profile updated!");
+    } catch (err) {
+      console.error("Error updating profile:", err);
+      alert("Failed to update profile.");
+    }
+  };
+
+  if (loading) return <div>Loading profile...</div>;
   if (!user) return <div>No user is signed in.</div>;
 
-  return (
-    <div style={{ maxWidth: 400, margin: "2rem auto", padding: 24, border: "1px solid #ddd", borderRadius: 8 }}>
+   return (
+    <div
+      style={{
+        maxWidth: 450,
+        margin: "2rem auto",
+        padding: 24,
+        border: "1px solid #ddd",
+        borderRadius: 8,
+        fontFamily: "system-ui, Segoe UI, Roboto, Arial",
+      }}
+    >
       {user.photoURL && (
         <img
           src={user.photoURL}
           alt="Profile"
-          style={{
-            width: 100,
-            height: 100,
-            borderRadius: "50%",
-            objectFit: "cover",
-            marginBottom: 16,
-          }}
+          style={{ width: 100, height: 100, borderRadius: "50%", objectFit: "cover", marginBottom: 16 }}
         />
       )}
       <h2>{user.displayName || "Unnamed User"}</h2>

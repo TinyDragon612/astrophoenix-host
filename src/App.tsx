@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { JSX, useEffect, useRef, useState } from "react";
 import { MANIFEST_URL, BASE_URL } from "./config";
 import type { Doc, SearchResult } from "./types";
 import Fuse from "fuse.js";
@@ -103,8 +103,22 @@ return (
           "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace",
       }}
     >
-      
-      {/* Logout moved to Profile page */}
+
+      <nav>
+      {/* ... your tab links ... */}
+      <button
+        onClick={() => signOut(auth)}
+        style={{
+          marginLeft: "auto",
+          background: "none",
+          border: "none",
+          color: "white",
+          cursor: "pointer",
+        }}
+      >
+        Logout
+      </button>
+    </nav>
 
       <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
         {tabs.map((tab) => (
@@ -631,6 +645,11 @@ return (
 
 //PAGES!!!!!
 
+function PrivateRoute({ children }: { children: JSX.Element }) {
+  const auth = getAuth();
+  const user = auth.currentUser;
+  return user ? children : <Navigate to="/" replace />;
+}
 
 export default function App() {
   const [user, setUser] = useState<any>(null);
@@ -664,7 +683,7 @@ export default function App() {
           <Route path="/explore" element={<Explore/>} />
           <Route path="/results" element={<Results/>} />
           <Route path="/saved" element={<Saved/>} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
           <Route path="/article/:id" element={<ArticlePage />} />
         </Routes>
       </Router>

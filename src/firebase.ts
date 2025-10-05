@@ -27,13 +27,11 @@ const analytics = getAnalytics(app);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
-setPersistence(auth, browserLocalPersistence)
+  setPersistence(auth, browserLocalPersistence)
   .then(() => {
-    // Now auth state persists across refresh
+    console.log("✅ Firebase auth persistence set to local");
   })
-  .catch((error) => {
-    console.error("Failed to set persistence:", error);
-  });
+  .catch((err) => console.error("Persistence error:", err));
 
 setPersistence(auth, browserLocalPersistence);
 
