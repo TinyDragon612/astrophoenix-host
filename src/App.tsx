@@ -3,6 +3,7 @@ import { MANIFEST_URL, BASE_URL } from "./config";
 import type { Doc, SearchResult } from "./types";
 import Fuse from "fuse.js";
 import AI from "./call_gpt";
+import AIU from "./gptItYourself";
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from "react-router-dom";
 
 import Explore from "./pages/explore";
@@ -201,6 +202,7 @@ function SearchPage() {
               const encoded = encodeURIComponent(filename);
               let r = await fetch(BASE_URL + encoded);
               if (!r.ok) {
+                console.log("fallback")
                 r = await fetch(BASE_URL + filename);
                 if (!r.ok) {
                   console.warn("Failed to fetch", filename, r.status);
@@ -325,15 +327,7 @@ function SearchPage() {
     const inverted = invertedRef.current;
     const fuse = fuseRef.current;
 
-    const hitsMap2 = new Map<string, SearchResult>();
-
-        hitsMap2.set("1", {
-          id: "AI",
-          title: "AI Summary",
-          excerpt: await AI(q, "question"),
-          score: 0,
-          matches: 1,
-        });
+    
    const hitsMap = new Map<string, SearchResult>();
     // 1) exact phrase in title
     for (const [id, d] of allDocs) {
@@ -345,6 +339,7 @@ function SearchPage() {
           excerpt: d.title,
           score: 0,
           matches: (titleLower.match(new RegExp(escapeRegex(phrase), "g")) || []).length,
+          content: d.content,
         });
       }
     }
@@ -361,6 +356,7 @@ function SearchPage() {
           excerpt: makeExcerpt(d.content, idx, phrase.length),
           score: 10,
           matches: (contentLower.match(new RegExp(escapeRegex(phrase), "g")) || []).length,
+          content: d.content,
         });
       }
     }
@@ -432,21 +428,52 @@ function SearchPage() {
         excerpt,
         score,
         matches: 0,
+        content: d.content,
       });
     }
 
+    
+
+
     // Convert to array and sort: score asc, matches desc, title
     let hitsArr = Array.from(hitsMap.values());
-    if (q.includes("?")) {
-       hitsArr = Array.from(hitsMap2.values());
-    }
+    
     //const hitsArr = Array.from(hitsMap.values());
     hitsArr.sort((a, b) => {
       if (a.score !== b.score) return a.score - b.score;
       if (b.matches !== a.matches) return b.matches - a.matches;
       return a.title.localeCompare(b.title);
     });
+    const encoded = encodeURIComponent(hitsArr[0].title);
+    let info = await fetch(BASE_URL + encoded + ".txt");
+    console.log (info);
 
+    let aiBabble = "The user asked: " + q + "\n I am now going to give you the contents of several academic papers that are relevant to this topic. Use ONLY KNOWLEDGE FROM THE FOLLOWING PAPERS to answer the user's question. Every piece of information you get from the papers MUST BE CITED with the title of cited paper in parentheses at the end of the relevant sentences. Thank you very much. BEGIN PAPERS: "
+    
+    let count = 0;
+    while (count < 5 && count < hitsArr.length) {
+        console.log ("On paper " + count);
+        const encoded = encodeURIComponent(hitsArr[count].title);
+        let info = await fetch(BASE_URL + encoded + ".txt");
+        aiBabble = aiBabble + "PAPER TITLE: " + hitsArr[count].title + " PAPER CONTENT: " + info + "END PAPER CONTENT. ", 
+        count++;
+    }
+
+   
+    const hitsMap2 = new Map<string, SearchResult>();
+
+        hitsMap2.set("1", {
+          id: "AI",
+          title: "AI Summary",
+          excerpt: AIU("You are a concise, factual assistant. Your job is to summarize and help people learn about papers on Space Biology.", aiBabble) + "\n Papers Cited: " + hitsArr[0].title,
+          score: 0,
+          matches: 1,
+          content: ""
+        });
+
+    if (q.includes("?")) {
+       hitsArr = Array.from(hitsMap2.values());
+    }
     // Set results (full array) and reset page
     setResults(hitsArr);
     setPage(1);
