@@ -380,220 +380,232 @@ return (
   <div
     style={{
       display: "flex",
-      justifyContent: "center",
+      flexDirection: "column",
       alignItems: "center",
       height: "100vh",
       background: "#fafafa",
+      fontFamily:
+        "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace",
     }}
   >
+    {/* Header + Controls (fixed) */}
     <div
       style={{
-        fontFamily:
-          "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace",
+        textAlign: "center",
         padding: 20,
-        maxWidth: 1000,
         width: "100%",
-        boxSizing: "border-box",
+        maxWidth: 1000,
+        position: "sticky",
+        top: 0,
+        background: "#fafafa",
+        zIndex: 10,
+        boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
       }}
     >
-      {/* Header and search controls centered */}
-      <div style={{ textAlign: "center", marginBottom: 24, color: "#372554"}}>
-        <h1>astrophoenix</h1>
-        <p style={{ color: "#372554" }}>
-          Search keywords and research questions across all 608 papers.
-        </p>
+      <h1 style={{ margin: "0 0 8px", color: "#372554" }}>astrophoenix</h1>
+      <p style={{ color: "#372554", margin: "0 0 16px" }}>
+        Search keywords and research questions across all 608 papers.
+      </p>
 
-        {error && <div style={{ color: "red", marginBottom: 12 }}>{error}</div>}
+      {error && <div style={{ color: "red", marginBottom: 12 }}>{error}</div>}
 
-        <div style={{ marginBottom: 12 }}>
-          <strong>Status:</strong> {status}
-          {status === "indexing" && (
-            <span>
-              {" "}
-              — downloaded {progress.done}/{progress.total} (
-              {Math.round(
-                (progress.done / Math.max(1, progress.total)) * 100
-              )}
-              %)
-            </span>
-          )}
-          {status === "ready" && (
-            <span> — indexed {progress.total} documents</span>
+      <div style={{ marginBottom: 12, color: "#372554"}}>
+        <strong>Status:</strong> {status}
+        {status === "indexing" && (
+          <span>
+            {" "}
+            — downloaded {progress.done}/{progress.total} (
+            {Math.round(
+              (progress.done / Math.max(1, progress.total)) * 100
+            )}
+            %)
+          </span>
+        )}
+        {status === "ready" && (
+          <span> — indexed {progress.total} documents</span>
+        )}
+      </div>
+
+      {/* Search Bar */}
+      <div
+        style={{
+          display: "flex",
+          gap: 8,
+          justifyContent: "center",
+          flexWrap: "wrap",
+        }}
+      >
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && doSearch(query)}
+          placeholder='Enter keywords or exact phrase (use "quotes" for phrase)'
+          style={{
+            flex: "1 1 300px",
+            padding: "10px 14px",
+            minWidth: 300,
+            borderRadius: 9999,
+            border: "1px solid #ccc",
+            outline: "none",
+            transition: "all 0.2s ease",
+            boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+          }}
+          onFocus={(e) => (e.target.style.border = "1px solid #888")}
+          onBlur={(e) => (e.target.style.border = "1px solid #ccc")}
+        />
+        <button
+          onClick={() => doSearch(query)}
+          disabled={!query || (status === "indexing" && progress.done === 0)}
+          style={{
+            borderRadius: 9999,
+            padding: "10px 16px",
+            cursor: "pointer",
+          }}
+        >
+          Search
+        </button>
+        <button
+          onClick={() => doSearch(query)}
+          style={{
+            borderRadius: 9999,
+            padding: "10px 16px",
+            cursor: "pointer",
+          }}
+        >
+          Refresh
+        </button>
+      </div>
+    </div>
+
+    {/* Scrollable Results Area */}
+    <div
+      style={{
+        flex: 1,
+        overflowY: "auto",
+        width: "100%",
+        maxWidth: 1000,
+        padding: "0 20px 40px",
+      }}
+    >
+      {/* Status & Controls */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          margin: "20px 0 10px",
+          flexWrap: "wrap",
+          color: "#666",
+        }}
+      >
+        <div>
+          {results.length} result{results.length !== 1 ? "s" : ""}{" "}
+          {results.length > 0 && (
+            <> — page {page} / {totalPages}</>
           )}
         </div>
 
-        {/* Rounded search bar section */}
-        <div
-          style={{
-            display: "flex",
-            gap: 8,
-            marginBottom: 12,
-            justifyContent: "center",
-            flexWrap: "wrap",
-          }}
-        >
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && doSearch(query)}
-            placeholder='Enter keywords or exact phrase (use "quotes" for phrase)'
-            style={{
-              flex: "1 1 300px",
-              padding: "10px 14px",
-              minWidth: 300,
-              borderRadius: 9999,
-              border: "1px solid #ccc",
-              outline: "none",
-              transition: "all 0.2s ease",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-            }}
-            onFocus={(e) => (e.target.style.border = "1px solid #888")}
-            onBlur={(e) => (e.target.style.border = "1px solid #ccc")}
-          />
-          <button
-            onClick={() => doSearch(query)}
-            disabled={!query || (status === "indexing" && progress.done === 0)}
-            style={{
-              borderRadius: 9999,
-              padding: "10px 16px",
-              cursor: "pointer",
-            }}
-          >
-            Search
-          </button>
-          <button
-            onClick={() => doSearch(query)}
-            style={{
-              borderRadius: 9999,
-              padding: "10px 16px",
-              cursor: "pointer",
-            }}
-          >
-            Refresh
-          </button>
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <label style={{ fontSize: 13, color: "#666" }}>
+            Page size:
+            <select
+              value={pageSize}
+              onChange={(e) => setPageSize(Number(e.target.value))}
+              style={{ marginLeft: 6 }}
+            >
+              {[5, 10, 20, 50].map((n) => (
+                <option key={n} value={n}>
+                  {n}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
       </div>
 
-      {/* Results area LEFT aligned */}
+      {/* Results List */}
       <div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: 10,
-            flexWrap: "wrap",
-            color: "#666",
-          }}
-        >
-          <div>
-            {results.length} result{results.length !== 1 ? "s" : ""}{" "}
-            {results.length > 0 && (
-              <> — page {page} / {totalPages}</>
-            )}
-          </div>
-
-          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <label style={{ fontSize: 13, color: "#666" }}>
-              Page size:
-              <select
-                value={pageSize}
-                onChange={(e) => setPageSize(Number(e.target.value))}
-                style={{ marginLeft: 6 }}
-              >
-                {[5, 10, 20, 50].map((n) => (
-                  <option key={n} value={n}>
-                    {n}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
-        </div>
-
-        {/* Results list */}
-        <div>
-          {pageResults.length === 0 && (
-            <div style={{ color: "#666" }}>No results on this page.</div>
-          )}
-          {pageResults.map((r) => (
-            <div
-              key={r.id}
-              style={{ padding: 12, borderBottom: "1px solid #eee" }}
-            >
-              <div style={{ fontSize: 16, fontWeight: 600 }}>
-                <span
-                  dangerouslySetInnerHTML={{
-                    __html: highlightHtml(r.title, query),
-                  }}
-                />
-              </div>
-              <div style={{ fontSize: 12, color: "#666", margin: "6px 0" }}>
-                {r.matches ? `${r.matches} match(es)` : ""}
-              </div>
-              <div style={{ whiteSpace: "pre-wrap", marginTop: 4 }}>
-                <span
-                  dangerouslySetInnerHTML={{
-                    __html: highlightHtml(r.excerpt, query),
-                  }}
-                />
-              </div>
-              <div
-                style={{ marginTop: 6, fontSize: 12, color: "#999" }}
-              >
-                score: {r.score}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Pagination centered below */}
-        <div
-          style={{
-            display: "flex",
-            gap: 8,
-            justifyContent: "center",
-            marginTop: 16,
-            flexWrap: "wrap",
-          }}
-        >
-          <button onClick={() => setPage(1)} disabled={page === 1}>
-            « First
-          </button>
-          <button
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-            disabled={page === 1}
-          >
-            ‹ Prev
-          </button>
+        {pageResults.length === 0 && (
+          <div style={{ color: "#666" }}>No results on this page.</div>
+        )}
+        {pageResults.map((r) => (
           <div
-            style={{
-              padding: "6px 10px",
-              border: "1px solid #eee",
-              borderRadius: 6,
-              minWidth: 120,
-              textAlign: "center",
-            }}
+            key={r.id}
+            style={{ padding: 12, borderBottom: "1px solid #eee" }}
           >
-            Page {page} of {totalPages}
+            <div style={{ fontSize: 16, fontWeight: 600 }}>
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: highlightHtml(r.title, query),
+                }}
+              />
+            </div>
+            <div style={{ fontSize: 12, color: "#666", margin: "6px 0" }}>
+              {r.matches ? `${r.matches} match(es)` : ""}
+            </div>
+            <div style={{ whiteSpace: "pre-wrap", marginTop: 4 }}>
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: highlightHtml(r.excerpt, query),
+                }}
+              />
+            </div>
+            <div
+              style={{ marginTop: 6, fontSize: 12, color: "#999" }}
+            >
+              score: {r.score}
+            </div>
           </div>
-          <button
-            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-            disabled={page === totalPages}
-          >
-            Next ›
-          </button>
-          <button
-            onClick={() => setPage(totalPages)}
-            disabled={page === totalPages}
-          >
-            Last »
-          </button>
+        ))}
+      </div>
+
+      {/* Pagination (centered) */}
+      <div
+        style={{
+          display: "flex",
+          gap: 8,
+          justifyContent: "center",
+          marginTop: 16,
+          flexWrap: "wrap",
+        }}
+      >
+        <button onClick={() => setPage(1)} disabled={page === 1}>
+          « First
+        </button>
+        <button
+          onClick={() => setPage((p) => Math.max(1, p - 1))}
+          disabled={page === 1}
+        >
+          ‹ Prev
+        </button>
+        <div
+          style={{
+            padding: "6px 10px",
+            border: "1px solid #eee",
+            borderRadius: 6,
+            minWidth: 120,
+            textAlign: "center",
+          }}
+        >
+          Page {page} of {totalPages}
         </div>
+        <button
+          onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+          disabled={page === totalPages}
+        >
+          Next ›
+        </button>
+        <button
+          onClick={() => setPage(totalPages)}
+          disabled={page === totalPages}
+        >
+          Last »
+        </button>
       </div>
     </div>
   </div>
 );
+
 
 
 }
