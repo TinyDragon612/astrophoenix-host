@@ -456,6 +456,7 @@ return (
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
+      justifyContent: "center",
       height: "100vh",
       background: "#fafafa",
       fontFamily:
@@ -466,12 +467,11 @@ return (
     <div
       style={{
         textAlign: "center",
-        padding: 200,
+        padding: "40px 24px",
         width: "100%",
         maxWidth: 1000,
-        position: "sticky",
-        top: 0,
-        background: "#ffffffff",
+        position: "relative",
+        background: "#fff",
         zIndex: 10,
         boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
         borderRadius: 50,
@@ -552,10 +552,7 @@ return (
       </div>
     </div>
 
-    {/* Results are shown on the separate Results page after search completes. */}
-    <div style={{ padding: 40, textAlign: "center", color: "#666" }}>
-      <em>Search results will open on the Results page automatically after you run a search.</em>
-    </div>
+    
   </div>
 );
 }
