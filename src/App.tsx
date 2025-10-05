@@ -448,7 +448,7 @@ return (
         maxWidth: 1000,
         position: "sticky",
         top: 0,
-        background: "#fafafa",
+        background: "#A094C7",
         zIndex: 10,
         boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
       }}
