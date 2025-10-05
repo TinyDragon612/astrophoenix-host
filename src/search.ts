@@ -95,7 +95,8 @@ export async function buildIndex(manifestUrl: string, baseUrl: string, opts?: {
           title: d.title,
           excerpt: d.title,
           score,
-          matches
+          matches,
+          content: d.content,
         })
         continue
       }
@@ -109,7 +110,8 @@ export async function buildIndex(manifestUrl: string, baseUrl: string, opts?: {
           title: d.title,
           excerpt: excerptFor(d.content, idx),
           score,
-          matches
+          matches,
+          content: d.content
         })
         continue
       }
@@ -130,7 +132,8 @@ export async function buildIndex(manifestUrl: string, baseUrl: string, opts?: {
         title: d.title,
         excerpt,
         score,
-        matches: 0
+        matches: 0,
+        content: d.content
       })
     }
 

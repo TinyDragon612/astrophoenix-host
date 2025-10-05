@@ -125,7 +125,7 @@ export default function ResultsPage() {
           </div>
           <Link 
             key={r.id}
-            to={`/article/${encodeURIComponent(r.id)}`}
+            to={`/article/${encodeURIComponent(r.title)}`}
             style={{ textDecoration: "none", color: "inherit" }}
           >
             <div key={r.id} style={{ padding: 12, borderBottom: "1px solid #eee" }}>
