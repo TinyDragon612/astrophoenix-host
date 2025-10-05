@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { MANIFEST_URL, BASE_URL } from "./config";
 import type { Doc, SearchResult } from "./types";
 import Fuse from "fuse.js";
-import AI from "./call_gpt";import "tailwindcss";
+import AI from "./call_gpt";
 
 import { initializeApp } from 'firebase/app';
 
