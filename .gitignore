@@ -3,3 +3,11 @@ package-lock.json
 package.json
 .env
 node_modules/.vite/deps/_metadata.json
+package-lock.json
+node_modules/.package-lock.json
+package-lock.json
+package-lock.json
+node_modules/.package-lock.json
+package-lock.json
+package.json
+node_modules/.package-lock.json
