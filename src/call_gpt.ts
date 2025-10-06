@@ -1,12 +1,18 @@
 import OpenAI from "openai";
 import "dotenv";
 
-const client = new OpenAI({
-  apiKey: import.meta.env.VITE_OPENAI_API_KEY, dangerouslyAllowBrowser: true,
-});
+import { useApiKey } from "./context/ApiKeyContext";
+
+
+
+
+
 
 export default async function askGPT(prompt: string, call_type: string) : Promise<string> {
   try {
+    const { apiKey } = useApiKey();
+   console.log("Current API Key:", apiKey);
+    const client = new OpenAI({ apiKey: apiKey!});
     var sys = ""
     var use = ""
 

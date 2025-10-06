@@ -19,6 +19,7 @@ import { getAuth, signOut } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
 import { setPersistence, browserLocalPersistence } from "firebase/auth";
 import { Navigate } from "react-router-dom";
+import { ApiKeyProvider, useApiKey } from "./context/ApiKeyContext";
 
 
 /**
@@ -305,6 +306,7 @@ return (
 }
 
 function SearchPage() {
+  const { apiKey, setApiKey } = useApiKey();
   const navigate = useNavigate();
   const { setLastResults } = useResults();
   const [status, setStatus] = useState<"idle" | "indexing" | "ready" | "error">("idle");
@@ -766,6 +768,31 @@ return (
       </div>
 
       {/* Search Bar */}
+
+      {/* API Key input */}
+<div style={{ marginBottom: 16 }}>
+  <input
+    type="password"
+    value={apiKey || ""}
+    onChange={(e) => setApiKey(e.target.value)}
+    placeholder="Enter your OpenAI API key"
+    style={{
+      padding: "10px 14px",
+      borderRadius: 9999,
+      border: "1px solid #333",
+      background: "transparent",
+      color: "#fff",
+      width: "100%",
+      maxWidth: 400,
+      textAlign: "center",
+      outline: "none",
+      boxShadow: "none",
+    }}
+  />
+  <div style={{ fontSize: 12, color: "#aaa", marginTop: 6 }}>
+    Your API key is stored locally in your browser.
+  </div>
+</div>
       <div
         style={{
           display: "flex",
@@ -877,6 +904,7 @@ export default function App() {
 
   function MainApp() {
   return (
+    <ApiKeyProvider>
     <ResultsProvider>
       <Router>
         <Navbar />
@@ -890,5 +918,6 @@ export default function App() {
         </Routes>
       </Router>
     </ResultsProvider>
+    </ApiKeyProvider>
   );
 }}
