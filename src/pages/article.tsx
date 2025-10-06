@@ -157,10 +157,11 @@ export default function ArticlePage() {
               background: "#0b0b0b",
               borderRadius: 16,
               boxShadow: "0 2px 8px rgba(255,255,255,0.03)",
-              padding: "40px 60px",
+              padding: "40px 60px 96px",
               maxWidth: 900,
               margin: "0 auto",
               border: "1px solid #151515",
+              position: "relative",
               fontFamily:
         "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace"
             }}
@@ -168,13 +169,6 @@ export default function ArticlePage() {
             <h1 style={{ marginTop: 0, color: "#fff", letterSpacing: 0.3 }}>
               {doc.title}
             </h1>
-
-            <div style={{ marginTop: 8, fontSize: 13, fontFamily:
-        "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace" }}>
-              <a href={doc.sourceUrl} target="_blank" rel="noreferrer">
-                View source
-              </a>
-            </div>
 
             <div style={{ 
               marginTop: 16, 
@@ -200,6 +194,46 @@ export default function ArticlePage() {
                 {summary}
               </section>
             )}
+
+            <a
+              href={doc.sourceUrl}
+              target="_blank"
+              rel="noreferrer"
+              style={{
+                position: "absolute",
+                right: 32,
+                bottom: 32,
+                padding: "10px 20px",
+                borderRadius: 999,
+                textDecoration: "none",
+                background: "rgba(133,99,246,0.2)",
+                border: "1px solid rgba(133,99,246,0.45)",
+                color: "#f8efff",
+                fontWeight: 600,
+                letterSpacing: 0.4,
+                boxShadow: "0 0 20px rgba(133,99,246,0.35)",
+                backdropFilter: "blur(6px)",
+                transition: "transform 0.2s ease, box-shadow 0.2s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.boxShadow = "0 0 24px rgba(133,99,246,0.55)";
+                e.currentTarget.style.transform = "translateY(-2px)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.boxShadow = "0 0 20px rgba(133,99,246,0.35)";
+                e.currentTarget.style.transform = "translateY(0)";
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.boxShadow = "0 0 24px rgba(133,99,246,0.55)";
+                e.currentTarget.style.transform = "translateY(-2px)";
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.boxShadow = "0 0 20px rgba(133,99,246,0.35)";
+                e.currentTarget.style.transform = "translateY(0)";
+              }}
+            >
+              View Source ↗
+            </a>
           </article>
         )}
       </div>
