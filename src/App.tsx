@@ -69,6 +69,177 @@ function tokenize(text: string) {
     .filter(Boolean);
 }
 
+function Starfield() {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animationFrame = 0;
+    const stars = Array.from({ length: 200 }, () => ({
+      x: Math.random(),
+      y: Math.random(),
+      size: Math.random() * 1.4 + 0.6,
+      twinkle: Math.random() * Math.PI * 2,
+      twinkleSpeed: 0.006 + Math.random() * 0.04,
+    }));
+    interface ShootingStar {
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      life: number;
+      length: number;
+      opacity: number;
+    }
+    const shootingStars: ShootingStar[] = [];
+
+    const spawnShootingStar = () => {
+      const side = Math.random() < 0.5 ? -0.1 : 1.1;
+      const startX = side;
+      const startY = 0.05 + Math.random() * 0.4;
+      const baseSpeed = 0.018 + Math.random() * 0.012;
+      const angle = side < 0 ? Math.random() * 0.4 - 0.2 : Math.PI - (Math.random() * 0.4 - 0.2);
+      shootingStars.push({
+        x: startX,
+        y: startY,
+        vx: baseSpeed * Math.cos(angle),
+        vy: baseSpeed * Math.sin(angle),
+        life: 120 + Math.random() * 40,
+        length: 0.1 + Math.random() * 0.05,
+        opacity: 0.9,
+      });
+    };
+    let time = Math.random() * Math.PI * 2;
+
+    const draw = () => {
+      const { width, height } = canvas;
+      time += 0.0025;
+
+      // deep night base
+      const base = ctx.createLinearGradient(0, 0, 0, height);
+      base.addColorStop(0, "#05010f");
+      base.addColorStop(0.55, "#020007");
+      base.addColorStop(1, "#000");
+      ctx.fillStyle = base;
+      ctx.fillRect(0, 0, width, height);
+
+      // subtle aurora ribbons
+      const ribbonCount = 2;
+      for (let i = 0; i < ribbonCount; i++) {
+        const phase = time * (0.16 + i * 0.045) + i * 2;
+        const intensity = 0.2 + (Math.sin(phase) + 1) * 0.25;
+        const centerX = width * (0.25 + i * 0.35) + Math.sin(phase * 0.8) * width * 0.08;
+        const centerY = height * (0.28 + Math.cos(phase * 0.6) * 0.06);
+        const grad = ctx.createRadialGradient(
+          centerX,
+          centerY,
+          width * 0.01,
+          centerX,
+          centerY,
+          width * 0.38
+        );
+        grad.addColorStop(0, "rgba(130,90,230,0.2)");
+        grad.addColorStop(0.35, "rgba(90,60,180,0.12)");
+        grad.addColorStop(0.7, "rgba(40,30,120,0.06)");
+        grad.addColorStop(1, "rgba(0,0,0,0)");
+        ctx.globalAlpha = intensity;
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, width, height);
+      }
+      ctx.globalAlpha = 1;
+
+      stars.forEach((star) => {
+        star.twinkle += star.twinkleSpeed;
+        const alpha = 0.2 + Math.abs(Math.sin(star.twinkle)) * 0.8;
+        ctx.globalAlpha = alpha;
+        const px = star.x * width;
+        const py = star.y * height;
+        ctx.fillStyle = "#fff";
+        ctx.beginPath();
+        ctx.arc(px, py, star.size, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.globalAlpha = 1;
+
+      if (shootingStars.length < 2 && Math.random() < 0.01) {
+        spawnShootingStar();
+      }
+
+      for (let i = shootingStars.length - 1; i >= 0; i--) {
+        const star = shootingStars[i];
+        star.x += star.vx;
+        star.y += star.vy;
+        star.life -= 1;
+        star.opacity = Math.max(0, star.opacity - 0.006);
+
+        const px = star.x * width;
+        const py = star.y * height;
+        const tailX = px - star.vx * width * (star.length * 18);
+        const tailY = py - star.vy * height * (star.length * 18);
+
+        ctx.strokeStyle = `rgba(255,255,255,${0.65 * star.opacity})`;
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(tailX, tailY);
+        ctx.lineTo(px, py);
+        ctx.stroke();
+
+        ctx.fillStyle = `rgba(255,255,255,${0.85 * star.opacity})`;
+        ctx.beginPath();
+        ctx.arc(px, py, 1.6, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (
+          star.life <= 0 ||
+          px < -50 ||
+          px > width + 50 ||
+          py < -50 ||
+          py > height + 50
+        ) {
+          shootingStars.splice(i, 1);
+        }
+      }
+
+      animationFrame = requestAnimationFrame(draw);
+    };
+
+    const handleResize = () => {
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      draw();
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      cancelAnimationFrame(animationFrame);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        zIndex: 0,
+        pointerEvents: "none",
+      }}
+    />
+  );
+}
+
 function Navbar() {
 
   const location = useLocation();
@@ -534,6 +705,8 @@ function SearchPage() {
   const pageResults = results.slice((page - 1) * pageSize, page * pageSize);
 
 return (
+  <>
+    <Starfield />
     <div
       style={{
         display: "flex",
@@ -544,8 +717,10 @@ return (
         padding: "80px 16px 60px",
         width: "100%",
         boxSizing: "border-box",
-        background: "#000",
+        background: "transparent",
         color: "#fff",
+        position: "relative",
+        zIndex: 1,
         fontFamily:
           "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace",
       }}
@@ -666,6 +841,7 @@ return (
 
     
   </div>
+  </>
 );
 }
 

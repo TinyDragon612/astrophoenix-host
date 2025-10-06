@@ -138,6 +138,7 @@ const Profile: React.FC = () => {
                 marginRight: 8,
                 backdropFilter: "blur(6px)",
                 boxShadow: "0 2px 10px rgba(0,0,0,0.35)",
+                fontFamily: "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace"
               }}
             >
               Edit Profile
@@ -160,6 +161,7 @@ const Profile: React.FC = () => {
                 cursor: "pointer",
                 backdropFilter: "blur(6px)",
                 boxShadow: "0 2px 12px rgba(229,57,53,0.25)",
+                fontFamily: "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace"
               }}
             >
               Logout
@@ -169,7 +171,7 @@ const Profile: React.FC = () => {
       ) : (
         <>
           <h2>Edit Profile</h2>
-          <div style={{ marginBottom: 12 }}>
+          <div style={{ marginBottom: 12, fontFamily: "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace"} }>
             <label>
               <strong>Display Name</strong>
             </label>
@@ -177,7 +179,8 @@ const Profile: React.FC = () => {
               type="text"
               value={newDisplayName}
               onChange={(e) => setNewDisplayName(e.target.value)}
-              style={{ width: "100%", padding: 8, borderRadius: 6, border: "1px solid #222", marginTop: 4, background: '#0b0b0b', color: '#fff' }}
+              style={{ width: "100%", padding: 8, borderRadius: 6, border: "1px solid #222", marginTop: 4, background: '#0b0b0b', color: '#fff', fontFamily:
+              "Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace" }}
             />
           </div>
           <div style={{ marginBottom: 12 }}>
