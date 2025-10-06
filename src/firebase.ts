@@ -13,11 +13,12 @@ import { setPersistence, browserLocalPersistence } from "firebase/auth";
 const firebaseConfig = {
   apiKey: "AIzaSyBKX0eIL-ja9zHCsgi_UwlD8JlByY96UB8",
   authDomain: "astrophoenix2-3b620.firebaseapp.com",
+  databaseURL: "https://astrophoenix2-3b620-default-rtdb.firebaseio.com",
   projectId: "astrophoenix2-3b620",
   storageBucket: "astrophoenix2-3b620.firebasestorage.app",
   messagingSenderId: "335448449685",
-  appId: "1:335448449685:web:fe31fc84f0313fa075319c",
-  measurementId: "G-C9M23TNWHD"
+  appId: "1:335448449685:web:01458f6c889f5ba775319c",
+  measurementId: "G-BXCHPVRQBJ"
 };
 
 // Initialize Firebase
