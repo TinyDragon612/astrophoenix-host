@@ -142,8 +142,42 @@ export default function ArticlePage() {
       }}
     >
       <div style={{ width: "100%", maxWidth: 960 }}>
-        <div style={{ marginBottom: 16 }}>
-          <Link to="/" style={{ color: "#372554", textDecoration: "none" }}>
+        <div style={{ marginBottom: 20 }}>
+          <Link
+            to="/"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "10px 18px",
+              borderRadius: 999,
+              textDecoration: "none",
+              background: "rgba(133,99,246,0.18)",
+              border: "1px solid rgba(133,99,246,0.45)",
+              color: "#f8efff",
+              fontWeight: 600,
+              letterSpacing: 0.4,
+              boxShadow: "0 0 16px rgba(133,99,246,0.32)",
+              backdropFilter: "blur(6px)",
+              transition: "transform 0.2s ease, box-shadow 0.2s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.boxShadow = "0 0 20px rgba(133,99,246,0.5)";
+              e.currentTarget.style.transform = "translateY(-1px)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.boxShadow = "0 0 16px rgba(133,99,246,0.32)";
+              e.currentTarget.style.transform = "translateY(0)";
+            }}
+            onFocus={(e) => {
+              e.currentTarget.style.boxShadow = "0 0 20px rgba(133,99,246,0.5)";
+              e.currentTarget.style.transform = "translateY(-1px)";
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.boxShadow = "0 0 16px rgba(133,99,246,0.32)";
+              e.currentTarget.style.transform = "translateY(0)";
+            }}
+          >
             ← Back to search
           </Link>
         </div>
