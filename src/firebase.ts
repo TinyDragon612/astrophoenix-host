@@ -17,8 +17,8 @@ const firebaseConfig = {
   projectId: "astrophoenix2-3b620",
   storageBucket: "astrophoenix2-3b620.firebasestorage.app",
   messagingSenderId: "335448449685",
-  appId: "1:335448449685:web:01458f6c889f5ba775319c",
-  measurementId: "G-BXCHPVRQBJ"
+  appId: "1:335448449685:web:05b6397db031115a75319c",
+  measurementId: "G-6SPVXTY689"
 };
 
 // Initialize Firebase
