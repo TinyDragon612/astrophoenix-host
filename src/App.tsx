@@ -79,12 +79,12 @@ function Starfield() {
     if (!ctx) return;
 
     let animationFrame = 0;
-    const stars = Array.from({ length: 64 }, () => ({
+    const stars = Array.from({ length: 200 }, () => ({
       x: Math.random(),
       y: Math.random(),
       size: Math.random() * 1.4 + 0.6,
       twinkle: Math.random() * Math.PI * 2,
-      twinkleSpeed: 0.006 + Math.random() * 0.004,
+      twinkleSpeed: 0.006 + Math.random() * 0.04,
     }));
     interface ShootingStar {
       x: number;
