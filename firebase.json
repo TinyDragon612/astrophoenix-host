@@ -11,6 +11,7 @@
         "source": "**",
         "destination": "/index.html"
       }
+      "engines": { "node": "18" }
     ]
   }
 }
