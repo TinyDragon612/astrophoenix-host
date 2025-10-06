@@ -176,7 +176,7 @@ export default function ExplorePage() {
                     ) : (
                       <span>{it.file}</span>
                     )}
-                  </div>
+                  </div> 
                 </div>
               </div>
             );
